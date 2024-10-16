@@ -233,7 +233,7 @@ CREATE TABLE payments(
   created_by integer,
   deleted_at timestamp,
   deleted_by integer,
-  CONSTRAINT payments_key UNIQUE(payment_id)
+  CONSTRAINT payments_pkey PRIMARY KEY(payment_id)
 );
 
 CREATE TABLE reviews(
