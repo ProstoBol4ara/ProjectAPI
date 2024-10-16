@@ -1,5 +1,4 @@
 from fastapi import FastAPI, status, HTTPException
-import uvicorn
 
 films: list = ["Duna", "Avatar", "Duna 2"]
 numbers: list = [2, 3, 5, 1, 6, 10]
@@ -50,6 +49,3 @@ def delete(index: int):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="not correct index")
     films.pop(index)
     return status.HTTP_200_OK
-
-if __name__ == '__main__':
-    uvicorn.run(app)
