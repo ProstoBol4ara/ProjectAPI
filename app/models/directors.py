@@ -8,7 +8,7 @@ class Directors(Base):
         PrimaryKeyConstraint('director_id', name='directors_pkey')
     )
 
-    director_id = mapped_column(Integer)
+    director_id = mapped_column(Integer, autoincrement=True)
     director_name = mapped_column(String(255), nullable=False)
     biography = mapped_column(Text)
     birth_date = mapped_column(Date)

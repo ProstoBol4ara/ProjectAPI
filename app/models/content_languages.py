@@ -10,7 +10,7 @@ class ContentLanguages(Base):
         PrimaryKeyConstraint('content_language_id', name='content_languages_pkey')
     )
 
-    content_language_id = mapped_column(Integer)
+    content_language_id = mapped_column(Integer, autoincrement=True)
     content_id = mapped_column(Integer)
     language_id = mapped_column(Integer)
     is_deleted = mapped_column(Boolean, server_default=text('false'))

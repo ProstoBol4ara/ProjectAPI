@@ -9,7 +9,7 @@ class PayPerView(Base):
         PrimaryKeyConstraint('pay_per_view_id', name='pay_per_view_pkey')
     )
 
-    pay_per_view_id = mapped_column(Integer)
+    pay_per_view_id = mapped_column(Integer, autoincrement=True)
     amount = mapped_column(Numeric(10, 2), nullable=False)
     content_id = mapped_column(Integer)
     is_deleted = mapped_column(Boolean, server_default=text('false'))

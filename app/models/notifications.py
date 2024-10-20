@@ -9,7 +9,7 @@ class Notifications(Base):
         PrimaryKeyConstraint('notification_id', name='notifications_pkey')
     )
 
-    notification_id = mapped_column(Integer)
+    notification_id = mapped_column(Integer, autoincrement=True)
     message = mapped_column(Text, nullable=False)
     user_id = mapped_column(Integer)
     notification_date = mapped_column(DateTime, server_default=text('CURRENT_TIMESTAMP'))

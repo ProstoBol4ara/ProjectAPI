@@ -10,7 +10,7 @@ class ContentCountries(Base):
         PrimaryKeyConstraint('content_country_id', name='content_countries_pkey')
     )
 
-    content_country_id = mapped_column(Integer)
+    content_country_id = mapped_column(Integer, autoincrement=True)
     content_id = mapped_column(Integer)
     country_id = mapped_column(Integer)
     is_deleted = mapped_column(Boolean, server_default=text('false'))

@@ -10,7 +10,7 @@ class Favorites(Base):
         PrimaryKeyConstraint('favorite_id', name='favorites_pkey')
     )
 
-    favorite_id = mapped_column(Integer)
+    favorite_id = mapped_column(Integer, autoincrement=True)
     user_id = mapped_column(Integer)
     content_id = mapped_column(Integer)
     added_at = mapped_column(DateTime, server_default=text('CURRENT_TIMESTAMP'))

@@ -9,7 +9,7 @@ class Content(Base):
         PrimaryKeyConstraint('content_id', name='content_pkey')
     )
 
-    content_id = mapped_column(Integer)
+    content_id = mapped_column(Integer, autoincrement=True)
     title = mapped_column(String(255), nullable=False)
     preview_path = mapped_column(Text)
     description = mapped_column(Text)

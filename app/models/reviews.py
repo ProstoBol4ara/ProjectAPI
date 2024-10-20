@@ -11,7 +11,7 @@ class Reviews(Base):
         PrimaryKeyConstraint('review_id', name='reviews_pkey')
     )
 
-    review_id = mapped_column(Integer)
+    review_id = mapped_column(Integer, autoincrement=True)
     content_id = mapped_column(Integer)
     user_id = mapped_column(Integer)
     rating = mapped_column(SmallInteger)

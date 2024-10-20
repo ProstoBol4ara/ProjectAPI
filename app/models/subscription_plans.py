@@ -8,7 +8,7 @@ class SubscriptionPlans(Base):
         PrimaryKeyConstraint('plan_id', name='subscription_plans_pkey')
     )
 
-    plan_id = mapped_column(Integer)
+    plan_id = mapped_column(Integer, autoincrement=True)
     plan_name = mapped_column(String(255), nullable=False)
     plan_price = mapped_column(Numeric(10, 2))
     is_deleted = mapped_column(Boolean, server_default=text('false'))

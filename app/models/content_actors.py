@@ -10,7 +10,7 @@ class ContentActors(Base):
         PrimaryKeyConstraint('content_actor_id', name='content_actors_pkey')
     )
 
-    content_actor_id = mapped_column(Integer)
+    content_actor_id = mapped_column(Integer, autoincrement=True)
     content_id = mapped_column(Integer)
     actor_id = mapped_column(Integer)
     role = mapped_column(String(255))

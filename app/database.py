@@ -1,6 +1,6 @@
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy import create_engine
-from fastapi import Depends
+from models.base import Base
 
 DATABASE_URL = "postgresql://test:123321@localhost/test"
 
@@ -13,6 +13,3 @@ def get_db():
         yield db
     finally:
         db.close()
-
-def get_depends():
-    return Depends(get_db)

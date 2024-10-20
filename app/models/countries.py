@@ -8,7 +8,7 @@ class Countries(Base):
         PrimaryKeyConstraint('country_id', name='countries_pkey')
     )
 
-    country_id = mapped_column(Integer)
+    country_id = mapped_column(Integer, autoincrement=True)
     country_name = mapped_column(String(255), nullable=False)
     is_deleted = mapped_column(Boolean, server_default=text('false'))
     created_at = mapped_column(DateTime, server_default=text('CURRENT_TIMESTAMP'))

@@ -9,7 +9,7 @@ class Episodes(Base):
         PrimaryKeyConstraint('episode_id', name='episodes_pkey')
     )
 
-    episode_id = mapped_column(Integer)
+    episode_id = mapped_column(Integer, autoincrement=True)
     content_id = mapped_column(Integer)
     season_number = mapped_column(Integer)
     episode_number = mapped_column(Integer)

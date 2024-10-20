@@ -11,7 +11,7 @@ class Users(Base):
         UniqueConstraint('username', name='users_username_key')
     )
 
-    user_id = mapped_column(Integer)
+    user_id = mapped_column(Integer, autoincrement=True)
     username = mapped_column(String(100), nullable=False)
     email = mapped_column(String(255), nullable=False)
     password_hash = mapped_column(Text, nullable=False)

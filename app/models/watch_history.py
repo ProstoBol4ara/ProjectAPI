@@ -10,7 +10,7 @@ class WatchHistory(Base):
         PrimaryKeyConstraint('watch_history_id', name='watch_history_pkey')
     )
 
-    watch_history_id = mapped_column(Integer)
+    watch_history_id = mapped_column(Integer, autoincrement=True)
     user_id = mapped_column(Integer)
     content_id = mapped_column(Integer)
     watched_at = mapped_column(DateTime, server_default=text('CURRENT_TIMESTAMP'))

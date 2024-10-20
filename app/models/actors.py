@@ -8,7 +8,7 @@ class Actors(Base):
         PrimaryKeyConstraint('actor_id', name='actors_pkey')
     )
 
-    actor_id = mapped_column(Integer)
+    actor_id = mapped_column(Integer, autoincrement=True)
     actor_name = mapped_column(String(255), nullable=False)
     biography = mapped_column(Text)
     birth_date = mapped_column(Date)

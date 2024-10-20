@@ -10,7 +10,7 @@ class UserSubscriptions(Base):
         PrimaryKeyConstraint('user_subscription_id', name='user_subscriptions_pkey')
     )
 
-    user_subscription_id = mapped_column(Integer)
+    user_subscription_id = mapped_column(Integer, autoincrement=True)
     start_date = mapped_column(Date, nullable=False)
     end_date = mapped_column(Date, nullable=False)
     user_id = mapped_column(Integer)

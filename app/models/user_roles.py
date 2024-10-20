@@ -11,7 +11,7 @@ class UserRoles(Base):
         UniqueConstraint('created_by', name='user_roles_key')
     )
 
-    user_role_id = mapped_column(Integer)
+    user_role_id = mapped_column(Integer, autoincrement=True)
     user_id = mapped_column(Integer)
     role_id = mapped_column(Integer)
     is_deleted = mapped_column(Boolean, server_default=text('false'))

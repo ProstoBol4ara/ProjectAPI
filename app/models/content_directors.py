@@ -10,7 +10,7 @@ class ContentDirectors(Base):
         PrimaryKeyConstraint('content_director_id', name='content_directors_pkey')
     )
 
-    content_director_id = mapped_column(Integer)
+    content_director_id = mapped_column(Integer, autoincrement=True)
     content_id = mapped_column(Integer)
     director_id = mapped_column(Integer)
     is_deleted = mapped_column(Boolean, server_default=text('false'))

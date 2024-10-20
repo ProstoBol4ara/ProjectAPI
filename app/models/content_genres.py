@@ -10,7 +10,7 @@ class ContentGenres(Base):
         PrimaryKeyConstraint('content_genre_id', name='content_genres_pkey')
     )
 
-    content_genre_id = mapped_column(Integer)
+    content_genre_id = mapped_column(Integer, autoincrement=True)
     content_id = mapped_column(Integer)
     genre_id = mapped_column(Integer)
     is_deleted = mapped_column(Boolean, server_default=text('false'))

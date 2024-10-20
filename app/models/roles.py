@@ -8,7 +8,7 @@ class Roles(Base):
         PrimaryKeyConstraint('role_id', name='roles_pkey')
     )
 
-    role_id = mapped_column(Integer)
+    role_id = mapped_column(Integer, autoincrement=True)
     role_name = mapped_column(String(50), nullable=False)
     is_deleted = mapped_column(Boolean, server_default=text('false'))
     created_at = mapped_column(DateTime, server_default=text('CURRENT_TIMESTAMP'))

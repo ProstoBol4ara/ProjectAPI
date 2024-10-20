@@ -8,7 +8,7 @@ class Languages(Base):
         PrimaryKeyConstraint('language_id', name='languages_pkey')
     )
 
-    language_id = mapped_column(Integer)
+    language_id = mapped_column(Integer, autoincrement=True)
     language_name = mapped_column(String(100), nullable=False)
     is_deleted = mapped_column(Boolean, server_default=text('false'))
     created_at = mapped_column(DateTime, server_default=text('CURRENT_TIMESTAMP'))

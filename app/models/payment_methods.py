@@ -10,7 +10,7 @@ class PaymentMethods(Base):
         PrimaryKeyConstraint('payment_method_id', name='payment_methods_pkey')
     )
 
-    payment_method_id = mapped_column(Integer)
+    payment_method_id = mapped_column(Integer, autoincrement=True)
     user_id = mapped_column(Integer)
     method_type = mapped_column(String(50))
     provider = mapped_column(String(255))

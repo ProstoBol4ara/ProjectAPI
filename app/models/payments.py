@@ -10,7 +10,7 @@ class Payments(Base):
         PrimaryKeyConstraint('payment_id', name='payments_pkey')
     )
 
-    payment_id = mapped_column(Integer)
+    payment_id = mapped_column(Integer, autoincrement=True)
     payment_date = mapped_column(DateTime, server_default=text('CURRENT_TIMESTAMP'))
     payment_method_id = mapped_column(Integer)
     pay_per_view_id = mapped_column(Integer)

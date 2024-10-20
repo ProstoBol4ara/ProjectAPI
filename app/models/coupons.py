@@ -10,7 +10,7 @@ class Coupons(Base):
         UniqueConstraint('code', name='coupons_code_key')
     )
 
-    coupon_id = mapped_column(BigInteger)
+    coupon_id = mapped_column(BigInteger, autoincrement=True)
     code = mapped_column(String(50), nullable=False)
     discount_percentage = mapped_column(Numeric(5, 2), nullable=False)
     valid_from = mapped_column(Date)

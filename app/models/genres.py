@@ -8,7 +8,7 @@ class Genres(Base):
         PrimaryKeyConstraint('genre_id', name='genres_pkey')
     )
 
-    genre_id = mapped_column(Integer)
+    genre_id = mapped_column(Integer, autoincrement=True)
     genre_name = mapped_column(String(100), nullable=False)
     is_deleted = mapped_column(Boolean, server_default=text('false'))
     created_at = mapped_column(DateTime, server_default=text('CURRENT_TIMESTAMP'))
