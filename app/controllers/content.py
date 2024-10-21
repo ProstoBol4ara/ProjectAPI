@@ -7,21 +7,21 @@ router = APIRouter(
     tags=["contents"]
 )
 
-@router.get('/', response_model=list[dict])
+@router.get('/')
 async def get_contents(db: Session = Depends(get_db)):
     contents = db.query(Content).all()
     if contents is None:
         raise HTTPException(status_code=400, detail="Contents not found")
     return [{"content_id": content.content_id, "title": content.title, "preview_path": content.preview_path, "description": content.description, "release_date": content.release_date, "content_type": content.content_type, "content_path": content.content_path} for content in contents]
 
-@router.get('/{content_id}', response_model=dict)
+@router.get('/{content_id}')
 async def get_content(content_id: int, db: Session = Depends(get_db)):
     content = db.query(Content).filter(Content.content_id == content_id).first()
     if content is None:
         raise HTTPException(status_code=400, detail="Content not found")
     return {"content_id": content.content_id, "title": content.title, "preview_path": content.preview_path, "description": content.description, "release_date": content.release_date, "content_type": content.content_type, "content_path": content.content_path}
 
-@router.post('/', response_model=dict)
+@router.post('/')
 async def create_content(title: str, preview_path: str = None, description: str = None, release_date: str = None, content_type: str = None, content_path: str = None, db: Session = Depends(get_db)):
     try:
         if not release_date is None:
@@ -34,7 +34,7 @@ async def create_content(title: str, preview_path: str = None, description: str 
         raise HTTPException(status_code=400, detail="Create failed")
     return {"content_id": new_content.content_id, "title": new_content.title, "preview_path": new_content.preview_path, "description": new_content.description, "release_date": new_content.release_date, "content_type": new_content.content_type, "content_path": new_content.content_path}
 
-@router.put('/{content_id}', response_model=dict)
+@router.put('/{content_id}')
 async def update_content(content_id: int, title: str = None, preview_path: str = None, description: str = None, release_date: str = None, content_type: str = None, content_path: str = None, db: Session = Depends(get_db)):
     content = db.query(Content).filter(Content.content_id == content_id).first()
     if content is None:
@@ -57,7 +57,7 @@ async def update_content(content_id: int, title: str = None, preview_path: str =
     db.refresh(content)
     return {"content_id": content.content_id, "title": content.title, "preview_path": content.preview_path, "description": content.description, "release_date": content.release_date, "content_type": content.content_type, "content_path": content.content_path}
 
-@router.delete('/{content_id}', response_model=dict)
+@router.delete('/{content_id}')
 async def delete_content(content_id: int, db: Session = Depends(get_db)):
     content = db.query(Content).filter(Content.content_id == content_id).first()
     if content is None:

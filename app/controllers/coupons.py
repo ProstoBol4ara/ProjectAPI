@@ -7,21 +7,21 @@ router = APIRouter(
     tags=["coupons"]
 )
 
-@router.get('/', response_model=list[dict])
+@router.get('/')
 async def get_coupons(db: Session = Depends(get_db)):
     coupons = db.query(Coupons).all()
     if coupons is None:
         raise HTTPException(status_code=400, detail="Coupons not found")
     return [{"coupon_id": coupon.coupon_id, "code": coupon.code, "discount_percentage": coupon.discount_percentage, "valid_from": coupon.valid_from, "valid_until": coupon.valid_until} for coupon in coupons]
 
-@router.get('/{coupon_id}', response_model=dict)
+@router.get('/{coupon_id}')
 async def get_coupon(coupon_id: int, db: Session = Depends(get_db)):
     coupon = db.query(Coupons).filter(Coupons.coupon_id == coupon_id).first()
     if coupon is None:
         raise HTTPException(status_code=400, detail="Coupon not found")
     return {"coupon_id": coupon.coupon_id, "code": coupon.code, "discount_percentage": coupon.discount_percentage, "valid_from": coupon.valid_from, "valid_until": coupon.valid_until}
 
-@router.post('/', response_model=dict)
+@router.post('/')
 async def create_coupon(code: str, discount_percentage: float, valid_from: str = None, valid_until: str = None, db: Session = Depends(get_db)):
     try:
         if not valid_from is None:
@@ -36,7 +36,7 @@ async def create_coupon(code: str, discount_percentage: float, valid_from: str =
         raise HTTPException(status_code=400, detail="Create failed")
     return {"coupon_id": new_coupon.coupon_id, "code": new_coupon.code, "discount_percentage": new_coupon.discount_percentage, "valid_from": new_coupon.valid_from, "valid_until": new_coupon.valid_until}
 
-@router.put('/{coupon_id}', response_model=dict)
+@router.put('/{coupon_id}')
 async def update_coupon(coupon_id: int, code: str = None, discount_percentage: float = None, valid_from: str = None, valid_until: str = None, db: Session = Depends(get_db)):
     try:
         coupon = db.query(Coupons).filter(Coupons.coupon_id == coupon_id).first()
@@ -58,7 +58,7 @@ async def update_coupon(coupon_id: int, code: str = None, discount_percentage: f
         raise HTTPException(status_code=400, detail="Update failed")
     return {"coupon_id": coupon.coupon_id, "code": coupon.code, "discount_percentage": coupon.discount_percentage, "valid_from": coupon.valid_from, "valid_until": coupon.valid_until}
 
-@router.delete('/{coupon_id}', response_model=dict)
+@router.delete('/{coupon_id}')
 async def delete_coupon(coupon_id: int, db: Session = Depends(get_db)):
     coupon = db.query(Coupons).filter(Coupons.coupon_id == coupon_id).first()
     if coupon is None:

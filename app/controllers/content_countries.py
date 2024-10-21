@@ -7,21 +7,21 @@ router = APIRouter(
     tags=["content_countries"]
 )
 
-@router.get('/', response_model=list[dict])
+@router.get('/')
 async def get_content_countries(db: Session = Depends(get_db)):
     content_countries = db.query(ContentCountries).all()
     if content_countries is None:
         raise HTTPException(status_code=400, detail="Content countries not found")
     return [{"content_actor_id": content_country.content_actor_id, "content_id": content_country.content_id, "country_id": content_country.country_id} for content_country in content_countries]
 
-@router.get('/{content_country_id}', response_model=dict)
+@router.get('/{content_country_id}')
 async def get_content_countrie(content_country_id: int, db: Session = Depends(get_db)):
     content_country = db.query(ContentCountries).filter(ContentCountries.content_country_id == content_country_id).first()
     if content_country is None:
         raise HTTPException(status_code=400, detail="Content countries not found")
     return {"content_actor_id": content_country.content_actor_id, "content_id": content_country.content_id, "country_id": content_country.country_id}
 
-@router.post('/', response_model=dict)
+@router.post('/')
 async def create_content_countrie(content_id: int, country_id: int, db: Session = Depends(get_db)):
     try:
         new_content_country = ContentCountries(content_id=content_id, country_id=country_id)
@@ -32,7 +32,7 @@ async def create_content_countrie(content_id: int, country_id: int, db: Session 
         raise HTTPException(status_code=400, detail="Create failed")
     return {"content_actor_id": new_content_country.content_country_id, "content_id": new_content_country.content_id, "country_id": new_content_country.country_id}
 
-@router.put('/{content_country_id}', response_model=dict)
+@router.put('/{content_country_id}')
 async def update_content_countrie(content_country_id: int, content_id: int = None, country_id: int = None, db: Session = Depends(get_db)):
     content_countrie = db.query(ContentCountries).filter(ContentCountries.content_country_id == content_country_id).first()
     if content_countrie is None:
@@ -47,7 +47,7 @@ async def update_content_countrie(content_country_id: int, content_id: int = Non
     db.refresh(content_countrie)
     return {"content_actor_id": content_countrie.content_country_id, "content_id": content_countrie.content_id, "country_id": content_countrie.country_id}
 
-@router.delete('/{content_country_id}', response_model=dict)
+@router.delete('/{content_country_id}')
 async def delete_content_countrie(content_country_id: int, db: Session = Depends(get_db)):
     content_countrie = db.query(ContentCountries).filter(ContentCountries.content_country_id == content_country_id).first()
     if content_countrie is None:

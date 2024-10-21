@@ -7,21 +7,21 @@ router = APIRouter(
     tags=["directors"]
 )
 
-@router.get('/', response_model=list[dict])
+@router.get('/')
 async def get_directors(db: Session = Depends(get_db)):
     directors = db.query(Directors).all()
     if directors is None:
         raise HTTPException(status_code=400, detail="Directors not found")
     return [{"director_id": director.director_id, "director_name": director.director_name, "biography": director.biography, "birth_date": director.birth_date} for director in directors]
 
-@router.get('/{director_id}', response_model=dict)
+@router.get('/{director_id}')
 async def get_director(director_id: int, db: Session = Depends(get_db)):
     director = db.query(Directors).filter(Directors.director_id == director_id).first()
     if director is None:
         raise HTTPException(status_code=400, detail="Director not found")
     return {"director_id": director.director_id, "director_name": director.director_name, "biography": director.biography, "birth_date": director.birth_date}
 
-@router.post('/', response_model=dict)
+@router.post('/')
 async def create_director(director_name: str, biography: str = None, birth_date: str = None, db: Session = Depends(get_db)):
     try:
         if not birth_date is None:
@@ -34,7 +34,7 @@ async def create_director(director_name: str, biography: str = None, birth_date:
         raise HTTPException(status_code=400, detail="Create failed")
     return {"director_id": new_director.director_id, "director_name": new_director.director_name, "biography": new_director.biography, "birth_date": new_director.birth_date}
 
-@router.put('/{director_id}', response_model=dict)
+@router.put('/{director_id}')
 async def update_director(director_id: int, director_name: str = None, biography:str = None, birth_date: str = None, db: Session = Depends(get_db)):
     try:
         director = db.query(Directors).filter(Directors.director_id == director_id).first()
@@ -54,7 +54,7 @@ async def update_director(director_id: int, director_name: str = None, biography
         raise HTTPException(status_code=400, detail="Update failed") 
     return {"director_id": director.director_id, "director_name": director.director_name, "biography": director.biography, "birth_date": director.birth_date}
 
-@router.delete('/{director_id}', response_model=dict)
+@router.delete('/{director_id}')
 async def delete_director(director_id: int, db: Session = Depends(get_db)):
     director = db.query(Directors).filter(Directors.director_id == director_id).first()
     if director is None:

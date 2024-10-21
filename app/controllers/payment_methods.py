@@ -7,21 +7,21 @@ router = APIRouter(
     tags=["payment_methods"]
 )
 
-@router.get('/', response_model=list[dict])
+@router.get('/')
 async def get_payment_methods(db: Session = Depends(get_db)):
     payment_methods = db.query(PaymentMethods).all()
     if payment_methods is None:
         raise HTTPException(status_code=400, detail="PaymentMethods not found")
     return [{"payment_method_id": payment_method.payment_method_id, "name": payment_method.name, "email": payment_method.email} for payment_method in payment_methods]
 
-@router.get('/{payment_method_id}', response_model=dict)
+@router.get('/{payment_method_id}')
 async def get_payment_method(payment_method_id: int, db: Session = Depends(get_db)):
     payment_method = db.query(PaymentMethods).filter(PaymentMethods.payment_method_id == payment_method_id).first()
     if payment_method is None:
         raise HTTPException(status_code=400, detail="Payment method not found")
     return {"payment_method_id": payment_method.payment_method_id, "name": payment_method.name, "email": payment_method.email}
 
-@router.post('/', response_model=dict)
+@router.post('/')
 async def create_payment_method(user_id: int, method_type: str, provider: str, account_number: str, db: Session = Depends(get_db)):
     try:
         new_payment_method = PaymentMethods(user_id=user_id, method_type=method_type, provider=provider, account_number=account_number)
@@ -32,7 +32,7 @@ async def create_payment_method(user_id: int, method_type: str, provider: str, a
         raise HTTPException(status_code=400, detail="Create failed")
     return {"payment_method_id": new_payment_method.payment_method_id, "name": new_payment_method.name, "email": new_payment_method.email}
 
-@router.put('/{payment_method_id}', response_model=dict)
+@router.put('/{payment_method_id}')
 async def update_payment_method(payment_method_id: int, user_id: int = None, method_type: str = None, provider: str = None, account_number: str = None, db: Session = Depends(get_db)):
     payment_method = db.query(PaymentMethods).filter(PaymentMethods.payment_method_id == payment_method_id).first()
     if payment_method is None:
@@ -51,7 +51,7 @@ async def update_payment_method(payment_method_id: int, user_id: int = None, met
     db.refresh(payment_method)
     return {"payment_method_id": payment_method.payment_method_id, "name": payment_method.name, "email": payment_method.email}
 
-@router.delete('/{payment_method_id}', response_model=dict)
+@router.delete('/{payment_method_id}')
 async def delete_payment_method(payment_method_id: int, db: Session = Depends(get_db)):
     payment_method = db.query(PaymentMethods).filter(PaymentMethods.payment_method_id == payment_method_id).first()
     if payment_method is None:

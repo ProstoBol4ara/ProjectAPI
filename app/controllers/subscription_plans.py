@@ -7,21 +7,21 @@ router = APIRouter(
     tags=["subscription_plans"]
 )
 
-@router.get('/', response_model=list[dict])
+@router.get('/')
 async def get_subscription_plans(db: Session = Depends(get_db)):
     subscription_plans = db.query(SubscriptionPlans).all()
     if subscription_plans is None:
         raise HTTPException(status_code=400, detail="SubscriptionPlans not found")
     return [{"plan_id": subscription_plan.plan_id, "plan_name": subscription_plan.plan_name, "plan_price": subscription_plan.plan_price} for subscription_plan in subscription_plans]
 
-@router.get('/{plan_id}', response_model=dict)
+@router.get('/{plan_id}')
 async def get_subscription_plan(plan_id: int, db: Session = Depends(get_db)):
     subscription_plan = db.query(SubscriptionPlans).filter(SubscriptionPlans.plan_id == plan_id).first()
     if subscription_plan is None:
         raise HTTPException(status_code=400, detail="Subscription plan not found")
     return {"plan_id": subscription_plan.plan_id, "plan_name": subscription_plan.plan_name, "plan_price": subscription_plan.plan_price}
 
-@router.post('/', response_model=dict)
+@router.post('/')
 async def create_subscription_plan(plan_name: str, plan_price: float, db: Session = Depends(get_db)):
     try:
         new_subscription_plan = SubscriptionPlans(plan_name=plan_name, plan_price=plan_price)
@@ -32,7 +32,7 @@ async def create_subscription_plan(plan_name: str, plan_price: float, db: Sessio
         raise HTTPException(status_code=400, detail="Create failed")
     return {"plan_id": new_subscription_plan.plan_id, "plan_name": new_subscription_plan.plan_name, "plan_price": new_subscription_plan.plan_price}
 
-@router.put('/{plan_id}', response_model=dict)
+@router.put('/{plan_id}')
 async def update_subscription_plan(subscription_plan_id: int, plan_name: str = None, plan_price: float = None, db: Session = Depends(get_db)):
     subscription_plan = db.query(SubscriptionPlans).filter(SubscriptionPlans.plan_id == plan_id).first()
     if subscription_plan is None:
@@ -47,7 +47,7 @@ async def update_subscription_plan(subscription_plan_id: int, plan_name: str = N
     db.refresh(subscription_plan)
     return {"plan_id": subscription_plan.plan_id, "plan_name": subscription_plan.plan_name, "plan_price": subscription_plan.plan_price}
 
-@router.delete('/{subscription_plan_id}', response_model=dict)
+@router.delete('/{subscription_plan_id}')
 async def delete_subscription_plan(subscription_plan_id: int, db: Session = Depends(get_db)):
     subscription_plan = db.query(SubscriptionPlans).filter(SubscriptionPlans.plan_id == subscription_plan_id).first()
     if subscription_plan is None:

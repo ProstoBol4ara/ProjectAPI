@@ -7,21 +7,21 @@ router = APIRouter(
     tags=["episodes"]
 )
 
-@router.get('/', response_model=list[dict])
+@router.get('/')
 async def get_episodes(db: Session = Depends(get_db)):
     episodes = db.query(Episodes).all()
     if episodes is None:
         raise HTTPException(status_code=400, detail="Episodes not found")
     return [{"episode_id": episode.episode_id, "content_id": episode.content_id, "season_number": episode.season_number, "episode_number": episode.episode_number, "title": episode.title, "release_date": episode.release_date, "episode_path": episode.episode_path} for episode in episodes]
 
-@router.get('/{episode_id}', response_model=dict)
+@router.get('/{episode_id}')
 async def get_episode(episode_id: int, db: Session = Depends(get_db)):
     episode = db.query(Episodes).filter(Episodes.episode_id == episode_id).first()
     if episode is None:
         raise HTTPException(status_code=400, detail="User not found")
     return {"episode_id": episode.episode_id, "content_id": episode.content_id, "season_number": episode.season_number, "episode_number": episode.episode_number, "title": episode.title, "release_date": episode.release_date, "episode_path": episode.episode_path}
 
-@router.post('/', response_model=dict)
+@router.post('/')
 async def create_episode(content_id: int, season_number: int = None, episode_number: int = None, title: str = None, release_date: str = None, episode_path: str = None, db: Session = Depends(get_db)):
     try:
         if not release_date is None:
@@ -34,7 +34,7 @@ async def create_episode(content_id: int, season_number: int = None, episode_num
         raise HTTPException(status_code=400, detail="Create failed")
     return {"episode_id": new_episode.episode_id, "content_id": new_episode.content_id, "season_number": new_episode.season_number, "episode_number": new_episode.episode_number, "title": new_episode.title, "release_date": new_episode.release_date, "episode_path": new_episode.episode_path}
 
-@router.put('/{episode_id}', response_model=dict)
+@router.put('/{episode_id}')
 async def update_episode(episode_id: int, content_id: int = None, season_number: int = None, episode_number: int = None, title: str = None, release_date: str = None, episode_path: str = None, db: Session = Depends(get_db)):
     try:
         episode = db.query(Episodes).filter(Episodes.episode_id == episode_id).first()
@@ -60,7 +60,7 @@ async def update_episode(episode_id: int, content_id: int = None, season_number:
         raise HTTPException(status_code=400, detail="Update failed")
     return {"episode_id": episode.episode_id, "content_id": episode.content_id, "season_number": episode.season_number, "episode_number": episode.episode_number, "title": episode.title, "release_date": episode.release_date, "episode_path": episode.episode_path}
 
-@router.delete('/{episode_id}', response_model=dict)
+@router.delete('/{episode_id}')
 async def delete_episode(episode_id: int, db: Session = Depends(get_db)):
     episode = db.query(Episodes).filter(Episodes.episode_id == episode_id).first()
     if episode is None:

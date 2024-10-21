@@ -7,21 +7,21 @@ router = APIRouter(
     tags=["roles"]
 )
 
-@router.get('/', response_model=list[dict])
+@router.get('/')
 async def get_roles(db: Session = Depends(get_db)):
     roles = db.query(Roles).all()
     if roles is None:
         raise HTTPException(status_code=400, detail="Roles not found")
     return [{"role_id": role.role_id, "role_name": role.role_name} for role in roles]
 
-@router.get('/{role_id}', response_model=dict)
+@router.get('/{role_id}')
 async def get_role(role_id: int, db: Session = Depends(get_db)):
     role = db.query(Roles).filter(Roles.role_id == role_id).first()
     if role is None:
         raise HTTPException(status_code=400, detail="Role not found")
     return {"role_id": role.role_id, "role_name": role.role_name}
 
-@router.post('/', response_model=dict)
+@router.post('/')
 async def create_role(role_name: str, db: Session = Depends(get_db)):
     try:
         new_role = Roles(role_name=role_name)
@@ -32,7 +32,7 @@ async def create_role(role_name: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Create failed")
     return {"role_id": new_role.role_id, "role_name": new_role.role_name}
 
-@router.put('/{role_id}', response_model=dict)
+@router.put('/{role_id}')
 async def update_role(role_id: int, role_name: str = None, db: Session = Depends(get_db)):
     role = db.query(Roles).filter(Roles.role_id == role_id).first()
     if role is None:
@@ -45,7 +45,7 @@ async def update_role(role_id: int, role_name: str = None, db: Session = Depends
     db.refresh(role)
     return {"role_id": role.role_id, "role_name": role.role_name}
 
-@router.delete('/{role_id}', response_model=dict)
+@router.delete('/{role_id}')
 async def delete_role(role_id: int, db: Session = Depends(get_db)):
     role = db.query(Roles).filter(Roles.role_id == role_id).first()
     if role is None:

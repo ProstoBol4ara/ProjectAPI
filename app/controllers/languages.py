@@ -7,21 +7,21 @@ router = APIRouter(
     tags=["languages"]
 )
 
-@router.get('/', response_model=list[dict])
+@router.get('/')
 async def get_languages(db: Session = Depends(get_db)):
     languages = db.query(Languages).all()
     if languages is None:
         raise HTTPException(status_code=400, detail="Languages not found")
     return [{"language_id": language.language_id, "name": language.language_name} for language in languages]
 
-@router.get('/{language_id}', response_model=dict)
+@router.get('/{language_id}')
 async def get_language(language_id: int, db: Session = Depends(get_db)):
     language = db.query(Languages).filter(Languages.language_id == language_id).first()
     if language is None:
         raise HTTPException(status_code=400, detail="Language not found")
     return {"language_id": language.language_id, "name": language.language_name}
 
-@router.post('/', response_model=dict)
+@router.post('/')
 async def create_language(language_name: str, db: Session = Depends(get_db)):
     try:
         new_language = Languages(language_name=language_name)
@@ -32,7 +32,7 @@ async def create_language(language_name: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Create failed")
     return {"language_id": new_language.language_id, "name": new_language.language_name}
 
-@router.put('/{language_id}', response_model=dict)
+@router.put('/{language_id}')
 async def update_language(language_id: int, language_name: str = None, db: Session = Depends(get_db)):
     language = db.query(Languages).filter(Languages.language_id == language_id).first()
     if language is None:
@@ -45,7 +45,7 @@ async def update_language(language_id: int, language_name: str = None, db: Sessi
     db.refresh(language)
     return {"language_id": language.language_id, "name": language.language_name}
 
-@router.delete('/{language_id}', response_model=dict)
+@router.delete('/{language_id}')
 async def delete_language(language_id: int, db: Session = Depends(get_db)):
     language = db.query(Languages).filter(Languages.language_id == language_id).first()
     if language is None:

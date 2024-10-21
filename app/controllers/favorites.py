@@ -7,21 +7,21 @@ router = APIRouter(
     tags=["favorites"]
 )
 
-@router.get('/', response_model=list[dict])
+@router.get('/')
 async def get_favorites(db: Session = Depends(get_db)):
     favorites = db.query(Favorites).all()
     if favorites is None:
         raise HTTPException(status_code=400, detail="Favorites not found")
     return [{"favorite_id": favorite.favorite_id, "user_id": favorite.user_id, "content_id": favorite.content_id} for favorite in favorites]
 
-@router.get('/{favorite_id}', response_model=dict)
+@router.get('/{favorite_id}')
 async def get_favorite(favorite_id: int, db: Session = Depends(get_db)):
     favorite = db.query(Favorites).filter(Favorites.favorite_id == favorite_id).first()
     if favorite is None:
         raise HTTPException(status_code=400, detail="Favorite not found")
     return {"favorite_id": favorite.favorite_id, "user_id": favorite.user_id, "content_id": favorite.content_id}
 
-@router.post('/', response_model=dict)
+@router.post('/')
 async def create_favorite(user_id: int, content_id: int, db: Session = Depends(get_db)):
     try:
         new_favorite = Favorites(user_id=user_id, content_id=content_id)
@@ -32,7 +32,7 @@ async def create_favorite(user_id: int, content_id: int, db: Session = Depends(g
         raise HTTPException(status_code=400, detail="Create failed")
     return {"favorite_id": new_favorite.favorite_id, "user_id": new_favorite.user_id, "content_id": new_favorite.content_id}
 
-@router.put('/{favorite_id}', response_model=dict)
+@router.put('/{favorite_id}')
 async def update_favorite(favorite_id: int, user_id: int = None, content_id = None, db: Session = Depends(get_db)):
     favorite = db.query(Favorites).filter(Favorites.favorite_id == favorite_id).first()
     if favorite is None:
@@ -47,7 +47,7 @@ async def update_favorite(favorite_id: int, user_id: int = None, content_id = No
     db.refresh(favorite)
     return {"favorite_id": favorite.favorite_id, "user_id": favorite.user_id, "content_id": favorite.content_id}
 
-@router.delete('/{favorite_id}', response_model=dict)
+@router.delete('/{favorite_id}')
 async def delete_favorite(favorite_id: int, db: Session = Depends(get_db)):
     favorite = db.query(Favorites).filter(Favorites.favorite_id == favorite_id).first()
     if favorite is None:

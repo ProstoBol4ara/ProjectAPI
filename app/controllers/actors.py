@@ -8,21 +8,21 @@ router = APIRouter(
     tags=["actors"]
 )
 
-@router.get('/', response_model=list[dict])
+@router.get('/')
 async def get_actors(db: Session = Depends(get_db)):
     actors = db.query(Actors).all()
     if actors is None:
         raise HTTPException(status_code=400, detail="Actors not found")
     return [{"actor_id": actor.actor_id, "actor_name": actor.actor_name, "biography": actor.biography, "birth_date": actor.birth_date} for actor in actors]
 
-@router.get('/{actor_id}', response_model=dict)
+@router.get('/{actor_id}')
 async def get_actor(actor_id: int, db: Session = Depends(get_db)):
     actor = db.query(Actors).filter(Actors.actor_id == actor_id).first()
     if actor is None:
         raise HTTPException(status_code=400, detail="Actor not found")
     return {"actor_id": actor.actor_id, "actor_name": actor.actor_name, "biography": actor.biography, "birth_date": actor.birth_date}
 
-@router.post('/', response_model=dict)
+@router.post('/')
 async def create_actor(actor_name: str, biography: str = None, birth_date: str = None, db: Session = Depends(get_db)):
     try:
         if not birth_date is None:
@@ -35,7 +35,7 @@ async def create_actor(actor_name: str, biography: str = None, birth_date: str =
         raise HTTPException(status_code=400, detail="Create failed")
     return {"actor_id": new_actor.actor_id, "name": new_actor.actor_name}
 
-@router.put('/{actor_id}', response_model=dict)
+@router.put('/{actor_id}')
 async def update_actor(actor_id: int, actor_name: str = None, biography: str = None, birth_date: str = None, db: Session = Depends(get_db)):
     actor = db.query(Actors).filter(Actors.actor_id == actor_id).first()
     if actor is None:
@@ -52,7 +52,7 @@ async def update_actor(actor_id: int, actor_name: str = None, biography: str = N
     db.refresh(actor)
     return {"actor_id": actor.actor_id, "name": actor.actor_name}
 
-@router.delete('/{actor_id}', response_model=dict)
+@router.delete('/{actor_id}')
 async def delete_actor(actor_id: int, db: Session = Depends(get_db)):
     actor = db.query(Actors).filter(Actors.actor_id == actor_id).first()
     if actor is None:

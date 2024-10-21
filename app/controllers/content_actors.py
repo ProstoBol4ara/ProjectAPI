@@ -7,21 +7,21 @@ router = APIRouter(
     tags=["content_actors"]
 )
 
-@router.get('/', response_model=list[dict])
+@router.get('/')
 async def get_content_actors(db: Session = Depends(get_db)):
     content_actors = db.query(ContentActors).all()
     if content_actors is None:
         raise HTTPException(status_code=400, detail="Сontent actors not found")
     return [{"content_actor_id": content_actor.content_actor_id, "content_id": content_actor.content_id, "actor_id": content_actor.actor_id, "role": content_actor.role} for content_actor in content_actors]
 
-@router.get('/{content_actor_id}', response_model=dict)
+@router.get('/{content_actor_id}')
 async def get_content_actors(content_actor_id: int, db: Session = Depends(get_db)):
     content_actor = db.query(ContentActors).filter(ContentActors.content_actor_id == content_actor_id).first()
     if content_actor is None:
         raise HTTPException(status_code=400, detail="Content actor not found")
     return {"content_actor_id": content_actor.content_actor_id, "content_id": content_actor.content_id, "actor_id": content_actor.actor_id, "role": content_actor.role}
 
-@router.post('/', response_model=dict)
+@router.post('/')
 async def create_content_actors(content_id: int, actor_id: int, role: str = None, db: Session = Depends(get_db)):
     try:
         new_content_actor = ContentActors(content_id=content_id, actor_id=actor_id, role=role)
@@ -32,7 +32,7 @@ async def create_content_actors(content_id: int, actor_id: int, role: str = None
         raise HTTPException(status_code=400, detail="Create failed")
     return {"content_actor_id": new_content_actor.content_actor_id, "actor_id": new_content_actor.actor_id, "role": new_content_actor.role}
 
-@router.put('/{content_actor_id}', response_model=dict)
+@router.put('/{content_actor_id}')
 async def update_content_actors(content_actor_id: int, content_id: int = None, actor_id: int = None, role: str = None, db: Session = Depends(get_db)):
     content_actor = db.query(ContentActors).filter(ContentActors.content_actor_id == content_actors_id).first()
     if content_actor is None:
@@ -49,7 +49,7 @@ async def update_content_actors(content_actor_id: int, content_id: int = None, a
     db.refresh(content_actor)
     return {"content_actor_id": content_actor.content_actor_id, "actor_id": content_actor.actor_id, "role": content_actor.role}
 
-@router.delete('/{content_actor_id}', response_model=dict)
+@router.delete('/{content_actor_id}')
 async def delete_content_actors(content_actor_id: int, db: Session = Depends(get_db)):
     content_actor = db.query(ContentActors).filter(ContentActors.content_actor_id == content_actor_id).first()
     if content_actor is None:
