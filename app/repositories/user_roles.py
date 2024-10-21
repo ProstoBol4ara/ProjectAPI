@@ -22,7 +22,7 @@ class UserRolesRepository:
         await self.db.refresh(new_user_role)
         return new_user_role
 
-    async def update_user(self, user_role_id: int, user_id: int = None, role_id: int = None):
+    async def update_user_role(self, user_role_id: int, user_id: int = None, role_id: int = None):
         user_role = await self.db.execute(
             select(UserRoles).where(UserRoles.user_id == user_id)
         )
@@ -37,7 +37,7 @@ class UserRolesRepository:
         await self.db.refresh(user)
         return user_role
 
-    async def delete_user(self, user_role_id: int):
+    async def delete_user_role(self, user_role_id: int):
         await self.db.execute(
             delete(UserRoles).where(UserRoles.user_role_id == user_role_id)
         )

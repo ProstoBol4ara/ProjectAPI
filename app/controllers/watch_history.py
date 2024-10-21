@@ -8,21 +8,21 @@ router = APIRouter(
 )
 
 @router.get('/')
-async def get_users(db: Session = Depends(get_db)):
+async def get_watch_historys(db: Session = Depends(get_db)):
     watch_historys = db.query(WatchHistory).all()
     if watch_historys is None:
         raise HTTPException(status_code=400, detail="Watch historys not found")
     return [{"watch_history_id": watch_history.watch_history_id, "user_id": watch_history.user_id, "content_id": watch_history.content_id} for watch_history in watch_historys]
 
 @router.get('/{watch_history_id}')
-async def get_user(watch_history_id: int, db: Session = Depends(get_db)):
+async def get_watch_history(watch_history_id: int, db: Session = Depends(get_db)):
     watch_history = db.query(WatchHistory).filter(WatchHistory.watch_history_id == watch_history_id).first()
     if watch_history is None:
         raise HTTPException(status_code=400, detail="Watch history not found")
     return {"watch_history_id": watch_history.watch_history_id, "user_id": watch_history.user_id, "content_id": watch_history.content_id}
 
 @router.post('/')
-async def create_user(user_id: int, content_id: int, db: Session = Depends(get_db)):
+async def create_watch_history(user_id: int, content_id: int, db: Session = Depends(get_db)):
     try:
         new_watch_history = WatchHistory(user_id=user_id, content_id=content_id)
         db.add(new_watch_history)
@@ -33,7 +33,7 @@ async def create_user(user_id: int, content_id: int, db: Session = Depends(get_d
     return {"watch_history_id": new_watch_history.watch_history_id, "user_id": new_watch_history.user_id, "content_id": new_watch_history.content_id}
 
 @router.put('/{watch_history_id}')
-async def update_user(watch_history_id: int, user_id: int = None, content_id: int = None, db: Session = Depends(get_db)):
+async def update_watch_history(watch_history_id: int, user_id: int = None, content_id: int = None, db: Session = Depends(get_db)):
     watch_history = db.query(WatchHistory).filter(WatchHistory.watch_history_id == watch_history_id).first()
     if watch_history is None:
         raise HTTPException(status_code=400, detail="Watch history not found")
@@ -48,7 +48,7 @@ async def update_user(watch_history_id: int, user_id: int = None, content_id: in
     return {"watch_history_id": watch_history.watch_history_id, "user_id": watch_history.user_id, "content_id": watch_history.content_id}
 
 @router.delete('/{watch_history_id}')
-async def delete_user(watch_history_id: int, db: Session = Depends(get_db)):
+async def delete_watch_history(watch_history_id: int, db: Session = Depends(get_db)):
     watch_history = db.query(WatchHistory).filter(WatchHistory.watch_history_id == watch_history_id).first()
     if watch_history is None:
         raise HTTPException(status_code=400, detail="Watch history not found")

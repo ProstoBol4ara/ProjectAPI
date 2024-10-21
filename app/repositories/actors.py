@@ -1,4 +1,5 @@
 from database import AsyncSession
+from datetime import datetime
 from models import Actors
 
 class ActorsRepository:
@@ -41,7 +42,6 @@ class ActorsRepository:
         await self.db.refresh(actor)
         return actor
 
-    @router.delete('/{actor_id}')
     async def delete_actor(self, actor_id: int):
         await self.db.execute(
             delete(Actors).where(Actors.actor_id == actor_id)

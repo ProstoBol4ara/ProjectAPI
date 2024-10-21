@@ -5,24 +5,24 @@ class RolesRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_roles():
+    async def get_roles(self):
         roles = await self.db.execute(select(Roles))
         return roles.scalar().all()
 
-    async def get_role(role_id: int):
+    async def get_role(self, role_id: int):
         role = await self.db.execute(
             select(Roles).where(Roles.role_id == role_id)
         )
         return role.scalar_one_or_none()
 
-    async def create_role(role_name: str):
+    async def create_role(self, role_name: str):
         new_role = Roles(role_name=role_name)
         self.db.add(new_role)
         await self.db.commit()
         await self.db.refresh(new_role)
         return new_role
 
-    async def update_role(role_id: int, role_name: str = None):
+    async def update_role(self, role_id: int, role_name: str = None):
         role = await self.db.execute(
             select(Roles).where(Roles.role_id == role_id)
         )
@@ -35,7 +35,7 @@ class RolesRepository:
         await self.db.refresh(role)
         return role
 
-    async def delete_role(role_id: int):
+    async def delete_role(self, role_id: int):
         await self.db.execute(
             delete(Roles).where(Roles.role_id == role_id)
         )
