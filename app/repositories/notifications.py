@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from models import Notifications
 
 class NotificationsRepository:
@@ -7,7 +7,7 @@ class NotificationsRepository:
 
     async def get_notifications(self):
         notifications = await self.db.execute(select(Notifications))
-        return notifications.scalar().all()
+        return notifications.scalars().all()
 
     async def get_notification(self, notification_id: int):
         notification = await self.db.execute(
@@ -38,7 +38,8 @@ class NotificationsRepository:
         return notification
 
     async def delete_notification(self, notification_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(Notifications).where(Notifications.notification_id == notification_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

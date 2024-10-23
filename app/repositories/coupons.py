@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from models import Coupons
 
 class CouponsRepository:
@@ -7,7 +7,7 @@ class CouponsRepository:
 
     async def get_coupons(self):
         coupons = await self.db.execute(select(Coupons))
-        return coupons
+        return coupons.scalars().all()
 
     async def get_coupon(self, coupon_id: int):
         coupon = await self.db.execute(
@@ -46,7 +46,8 @@ class CouponsRepository:
         return coupon
 
     async def delete_coupon(self, coupon_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(Coupons).where(Coupons.coupon_id == coupon_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

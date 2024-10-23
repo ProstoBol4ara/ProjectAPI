@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
-from database import get_db, Session
-from models import Languages
+from repositories import LanguagesRepository
+from database import AsyncSession, get_db
+from services import LanguagesService
 
 router = APIRouter(
     prefix="/languages",
@@ -8,49 +9,36 @@ router = APIRouter(
 )
 
 @router.get('/')
-async def get_languages(db: Session = Depends(get_db)):
-    languages = db.query(Languages).all()
+async def get_languages(db: AsyncSession = Depends(get_db)):
+    languages = await LanguagesService(LanguagesRepository(db)).get_languages()
     if languages is None:
         raise HTTPException(status_code=400, detail="Languages not found")
-    return [{"language_id": language.language_id, "name": language.language_name} for language in languages]
+    return languages
 
 @router.get('/{language_id}')
-async def get_language(language_id: int, db: Session = Depends(get_db)):
-    language = db.query(Languages).filter(Languages.language_id == language_id).first()
+async def get_language(language_id: int, db: AsyncSession = Depends(get_db)):
+    language = await LanguagesService(LanguagesRepository(db)).get_language(language_id=language_id)
     if language is None:
         raise HTTPException(status_code=400, detail="Language not found")
-    return {"language_id": language.language_id, "name": language.language_name}
+    return language
 
 @router.post('/')
-async def create_language(language_name: str, db: Session = Depends(get_db)):
+async def create_language(language_name: str, db: AsyncSession = Depends(get_db)):
     try:
-        new_language = Languages(language_name=language_name)
-        db.add(new_language)
-        db.commit()
-        db.refresh(new_language)
+        new_language = await LanguagesService(LanguagesRepository(db)).create_language(language_name=language_name)
     except:
         raise HTTPException(status_code=400, detail="Create failed")
-    return {"language_id": new_language.language_id, "name": new_language.language_name}
+    return new_language
 
 @router.put('/{language_id}')
-async def update_language(language_id: int, language_name: str = None, db: Session = Depends(get_db)):
-    language = db.query(Languages).filter(Languages.language_id == language_id).first()
+async def update_language(language_id: int, language_name: str = None, db: AsyncSession = Depends(get_db)):
+    language = await LanguagesService(LanguagesRepository(db)).update_language(language_id=language_id, language_name=language_name)
     if language is None:
         raise HTTPException(status_code=400, detail="Language not found")
-
-    if language_name:
-        language.language_name = language_name
-
-    db.commit()
-    db.refresh(language)
-    return {"language_id": language.language_id, "name": language.language_name}
+    return language
 
 @router.delete('/{language_id}')
-async def delete_language(language_id: int, db: Session = Depends(get_db)):
-    language = db.query(Languages).filter(Languages.language_id == language_id).first()
-    if language is None:
+async def delete_language(language_id: int, db: AsyncSession = Depends(get_db)):
+    if not await LanguagesService(LanguagesRepository(db)).delete_language(language_id=language_id):
         raise HTTPException(status_code=400, detail="Language not found")
-
-    db.delete(language)
-    db.commit()
     return {"message": "Language deleted successfully"}

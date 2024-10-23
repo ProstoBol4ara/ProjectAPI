@@ -21,5 +21,5 @@ class ContentCountriesService:
         return None if content_country is None else {"content_country_id": content_country.content_country_id, "content_id": content_countrie.content_id, "country_id": content_countrie.country_id}
 
     async def delete_content_country(self, content_country_id: int):
-        await self.content_countries_repository.delete_content_country(content_country_id=content_country_id)
+        return await self.content_countries_repository.delete_content_country(content_country_id=content_country_id)
     

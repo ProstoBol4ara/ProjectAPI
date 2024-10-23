@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
-from database import get_db, Session
-from models import UserRoles
+from repositories import UserRolesRepository
+from database import AsyncSession, get_db
+from services import UserRolesService
 
 router = APIRouter(
     prefix="/user_roles",
@@ -8,46 +9,39 @@ router = APIRouter(
 )
 
 @router.get('/')
-async def get_user_roles(db: Session = Depends(get_db)):
-    user_roles = db.query(UserRoles).all()
+async def get_user_roles(db: AsyncSession = Depends(get_db)):
+    user_roles = await UserRolesService(UserRolesRepository(db)).get_user_roles()
     if user_roles is None:
         raise HTTPException(status_code=400, detail="User roles not found")
-    return [{"user_role_id": user_role.user_role_id, "user_id": user_role.user_id, "role_id": user_role.role_id} for user_role in user_roles]
+    return user_roles
 
 @router.get('/{user_role_id}')
-async def get_user_role(user_role_id: int, db: Session = Depends(get_db)):
-    user_role = db.query(UserRoles).filter(UserRoles.user_role_id == user_role_id).first()
+async def get_user_role(user_role_id: int, db: AsyncSession = Depends(get_db)):
+    user_role = await UserRolesService(UserRolesRepository(db)).get_user_role(user_role_id=user_role_id)
     if user_role is None:
         raise HTTPException(status_code=400, detail="User role not found")
-    return {"user_role_id": user_role.user_role_id, "user_id": user_role.user_id, "role_id": user_role.role_id}
+    return user_role
 
 @router.post('/')
-async def create_user_role(user_id: int, role_id: int, db: Session = Depends(get_db)):
+async def create_user_role(user_id: int, role_id: int, db: AsyncSession = Depends(get_db)):
     try:
-        new_user_role = UserRoles(user_id=user_id, role_id=role_id)
-        db.add(new_user_role)
-        db.commit()
-        db.refresh(new_user_role)
-    except:
-        raise HTTPException(status_code=400, detail="Create failed")
-    return {"user_role_id": new_user_role.user_role_id, "user_id": new_user_role.user_id, "role_id": new_user_role.role_id}
+        new_user_role = await UserRolesService(UserRolesRepository(db)).create_user_role(user_id=user_id, role_id=role_id)
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return new_user_role
 
 @router.put('/{user_role_id}')
-async def update_user_role(user_role_id: int, db: Session = Depends(get_db)):
-    user_role = db.query(UserRoles).filter(UserRoles.user_role_id == user_role_id).first()
-    if user_role is None:
-        raise HTTPException(status_code=400, detail="User role not found")
-
-    db.commit()
-    db.refresh(user)
-    return {"user_role_id": user_role.user_role_id, "user_id": user_role.user_id, "role_id": user_role.role_id}
+async def update_user_role(user_role_id: int, db: AsyncSession = Depends(get_db)):
+    try:
+        user_role = await UserRolesService(UserRolesRepository(db)).update_user_role(user_role_id=user_role_id, user_id=user_id, role_id=role_id)
+        if user_role is None:
+            raise HTTPException(status_code=400, detail="User role not found")
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return user_role
 
 @router.delete('/{user_role_id}')
-async def delete_user_role(user_role_id: int, db: Session = Depends(get_db)):
-    user = db.query(UserRoles).filter(UserRoles.user_role_id == user_role_id).first()
-    if user is None:
+async def delete_user_role(user_role_id: int, db: AsyncSession = Depends(get_db)):
+    if not await UserRolesService(UserRolesRepository(db)).delete_user_role(user_role_id=user_role_id):
         raise HTTPException(status_code=400, detail="User role not found")
-
-    db.delete(user)
-    db.commit()
     return {"message": "User role deleted successfully"}

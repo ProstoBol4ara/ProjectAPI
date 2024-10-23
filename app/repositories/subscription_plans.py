@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from models import SubscriptionPlans
 
 class SubscriptionPlansRepository:
@@ -7,7 +7,7 @@ class SubscriptionPlansRepository:
 
     async def get_subscription_plans(self):
         subscription_plans = await self.db.execute(select(SubscriptionPlans))
-        return subscription_plans.scalar().all()
+        return subscription_plans.scalars().all()
 
     async def get_subscription_plan(self, plan_id: int):
         subscription_plan = await self.db.execute(
@@ -38,7 +38,8 @@ class SubscriptionPlansRepository:
         return subscription_plan
 
     async def delete_subscription_plan(self, subscription_plan_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(SubscriptionPlans).where(SubscriptionPlans.subscription_plan_id == subscription_plan_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

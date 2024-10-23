@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
-from database import get_db, Session
-from models import Reviews
+from repositories import ReviewsRepository
+from database import AsyncSession, get_db
+from services import ReviewsService
 
 router = APIRouter(
     prefix="/reviews",
@@ -8,55 +9,39 @@ router = APIRouter(
 )
 
 @router.get('/')
-async def get_reviews(db: Session = Depends(get_db)):
-    reviews = db.query(Reviews).all()
+async def get_reviews(db: AsyncSession = Depends(get_db)):
+    reviews = await ReviewsService(ReviewsRepository(db)).get_reviews()
     if reviews is None:
         raise HTTPException(status_code=400, detail="Reviews not found")
-    return [{"review_id": review.review_id, "content_id": review.content_id, "user_id": review.user_id, "rating": review.rating, "comment": review.comment} for review in reviews]
+    return reviews
 
 @router.get('/{review_id}')
-async def get_review(review_id: int, db: Session = Depends(get_db)):
-    review = db.query(Reviews).filter(Reviews.review_id == review_id).first()
+async def get_review(review_id: int, db: AsyncSession = Depends(get_db)):
+    review = await ReviewsService(ReviewsRepository(db)).get_review(review_id=review_id)
     if review is None:
         raise HTTPException(status_code=400, detail="Review not found")
-    return {"review_id": review.review_id, "content_id": review.content_id, "user_id": review.user_id, "rating": review.rating, "comment": review.comment}
+    return review
 
 @router.post('/')
-async def create_review(content_id: int, user_id: int, rating: int, comment: str, db: Session = Depends(get_db)):
+async def create_review(content_id: int, user_id: int, rating: int, comment: str, db: AsyncSession = Depends(get_db)):
     try:
-        new_review = Reviews(content_id=content_id, user_id=user_id, rating=rating, comment=comment)
-        db.add(new_review)
-        db.commit()
-        db.refresh(new_review)
-    except:
-        raise HTTPException(status_code=400, detail="Create failed")
-    return {"review_id": new_review.review_id, "content_id": new_review.content_id, "user_id": new_review.user_id, "rating": new_review.rating, "comment": new_review.comment}
+        new_review = await ReviewsService(ReviewsRepository(db)).create_review(content_id=content_id, user_id=user_id, rating=rating, comment=comment)
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return new_review
 
 @router.put('/{review_id}')
-async def update_review(review_id: int, content_id: int = None, user_id: int = None, rating: int = None, comment: str = None, db: Session = Depends(get_db)):
-    review = db.query(Reviews).filter(Reviews.review_id == review_id).first()
-    if review is None:
-        raise HTTPException(status_code=400, detail="Review not found")
-
-    if content_id:
-        review.content_id = content_id
-    if user_id:
-        review.user_id = user_id
-    if rating:
-        review.rating = rating
-    if comment:
-        review.comment = comment
-
-    db.commit()
-    db.refresh(review)
-    return {"review_id": review.review_id, "content_id": review.content_id, "user_id": review.user_id, "rating": review.rating, "comment": review.comment}
+async def update_review(review_id: int, content_id: int = None, user_id: int = None, rating: int = None, comment: str = None, db: AsyncSession = Depends(get_db)):
+    try:
+        review = await ReviewsService(ReviewsRepository(db)).update_review(review_id=review_id, content_id=content_id, user_id=user_id, rating=rating, comment=comment)
+        if review is None:
+            raise HTTPException(status_code=400, detail="Review not found")
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return review
 
 @router.delete('/{review_id}')
-async def delete_review(review_id: int, db: Session = Depends(get_db)):
-    review = db.query(Reviews).filter(Reviews.review_id == review_id).first()
-    if review is None:
+async def delete_review(review_id: int, db: AsyncSession = Depends(get_db)):
+    if not await ReviewsService(ReviewsRepository(db)).delete_review(review_id=review_id):
         raise HTTPException(status_code=400, detail="Review not found")
-
-    db.delete(review)
-    db.commit()
     return {"message": "Review deleted successfully"}

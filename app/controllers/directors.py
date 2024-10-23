@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
-from database import get_db, Session
-from models import Directors
+from repositories import DirectorsRepository
+from database import AsyncSession, get_db
+from services import DirectorsService
 
 router = APIRouter(
     prefix="/directors",
@@ -8,58 +9,39 @@ router = APIRouter(
 )
 
 @router.get('/')
-async def get_directors(db: Session = Depends(get_db)):
-    directors = db.query(Directors).all()
+async def get_directors(db: AsyncSession = Depends(get_db)):
+    directors = await DirectorsService(DirectorsRepository(db)).get_directors()
     if directors is None:
         raise HTTPException(status_code=400, detail="Directors not found")
-    return [{"director_id": director.director_id, "director_name": director.director_name, "biography": director.biography, "birth_date": director.birth_date} for director in directors]
+    return directors
 
 @router.get('/{director_id}')
-async def get_director(director_id: int, db: Session = Depends(get_db)):
-    director = db.query(Directors).filter(Directors.director_id == director_id).first()
+async def get_director(director_id: int, db: AsyncSession = Depends(get_db)):
+    director = await DirectorsService(DirectorsRepository(db)).get_director(director_id=director_id)
     if director is None:
         raise HTTPException(status_code=400, detail="Director not found")
-    return {"director_id": director.director_id, "director_name": director.director_name, "biography": director.biography, "birth_date": director.birth_date}
+    return director
 
 @router.post('/')
-async def create_director(director_name: str, biography: str = None, birth_date: str = None, db: Session = Depends(get_db)):
+async def create_director(director_name: str, biography: str = None, birth_date: str = None, db: AsyncSession = Depends(get_db)):
     try:
-        if not birth_date is None:
-            birth_date = datetime.strptime(birth_date, '%d.%m.%Y').date()
-        new_director = Directors(director_name=director_name, biography=biography, birth_date=birth_date)
-        db.add(new_director)
-        db.commit()
-        db.refresh(new_director)
-    except:
-        raise HTTPException(status_code=400, detail="Create failed")
-    return {"director_id": new_director.director_id, "director_name": new_director.director_name, "biography": new_director.biography, "birth_date": new_director.birth_date}
+        new_director = await DirectorsService(DirectorsRepository(db)).create_director(director_name=director_name, biography=biography, birth_date=birth_date)
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return new_director
 
 @router.put('/{director_id}')
-async def update_director(director_id: int, director_name: str = None, biography:str = None, birth_date: str = None, db: Session = Depends(get_db)):
+async def update_director(director_id: int, director_name: str = None, biography:str = None, birth_date: str = None, db: AsyncSession = Depends(get_db)):
     try:
-        director = db.query(Directors).filter(Directors.director_id == director_id).first()
+        director = await DirectorsService(DirectorsRepository(db)).update_director(director_id=director_id, director_name=director_name, biography=biography, birth_date=birth_date)
         if director is None:
             raise HTTPException(status_code=400, detail="Director not found")
-
-        if director_name:
-            director.director_name = director_name
-        if biography:
-            director.biography = biography
-        if birth_date:
-            director.birth_date = datetime.strptime(birth_date, '%d.%m.%Y').date()
-
-        db.commit()
-        db.refresh(director)
-    except:
-        raise HTTPException(status_code=400, detail="Update failed") 
-    return {"director_id": director.director_id, "director_name": director.director_name, "biography": director.biography, "birth_date": director.birth_date}
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return director
 
 @router.delete('/{director_id}')
-async def delete_director(director_id: int, db: Session = Depends(get_db)):
-    director = db.query(Directors).filter(Directors.director_id == director_id).first()
-    if director is None:
+async def delete_director(director_id: int, db: AsyncSession = Depends(get_db)):
+    if not await DirectorsService(DirectorsRepository(db)).delete_director(director_id=director_id):
         raise HTTPException(status_code=400, detail="Director not found")
-
-    db.delete(director)
-    db.commit()
     return {"message": "Director deleted successfully"}

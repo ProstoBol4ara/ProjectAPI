@@ -1,4 +1,5 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
+from crypt import hash_password
 from models import Users
 
 class UsersRepository:
@@ -7,7 +8,7 @@ class UsersRepository:
 
     async def get_users(self):
         users = await self.db.execute(select(Users))
-        return users.scalar().all()
+        return users.scalars().all()
 
     async def get_user(self, user_id: int):
         user = await self.db.execute(
@@ -30,7 +31,7 @@ class UsersRepository:
         user = user.scalar_one_or_none()
 
         if password:
-            user.password = hash_password(password)
+            user.password_hash = hash_password(password)
         if username:
             user.username = username
         if email:
@@ -41,7 +42,8 @@ class UsersRepository:
         return user
 
     async def delete_user(self, user_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(Users).where(Users.user_id == user_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

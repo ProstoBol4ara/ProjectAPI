@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
-from database import get_db, Session
-from models import ContentActors
+from repositories import ContentActorsRepository
+from services import ContentActorsService
+from database import AsyncSession, get_db
 
 router = APIRouter(
     prefix="/content_actors",
@@ -8,53 +9,39 @@ router = APIRouter(
 )
 
 @router.get('/')
-async def get_content_actors(db: Session = Depends(get_db)):
-    content_actors = db.query(ContentActors).all()
+async def get_content_actors(db: AsyncSession = Depends(get_db)):
+    content_actors = await ContentActorsService(ContentActorsRepository(db)).get_content_actors()
     if content_actors is None:
         raise HTTPException(status_code=400, detail="Сontent actors not found")
-    return [{"content_actor_id": content_actor.content_actor_id, "content_id": content_actor.content_id, "actor_id": content_actor.actor_id, "role": content_actor.role} for content_actor in content_actors]
+    return content_actors
 
 @router.get('/{content_actor_id}')
-async def get_content_actors(content_actor_id: int, db: Session = Depends(get_db)):
-    content_actor = db.query(ContentActors).filter(ContentActors.content_actor_id == content_actor_id).first()
+async def get_content_actors(content_actor_id: int, db: AsyncSession = Depends(get_db)):
+    content_actor = await ContentActorsService(ContentActorsRepository(db)).get_content_actor(content_actor_id=content_actor_id)
     if content_actor is None:
         raise HTTPException(status_code=400, detail="Content actor not found")
-    return {"content_actor_id": content_actor.content_actor_id, "content_id": content_actor.content_id, "actor_id": content_actor.actor_id, "role": content_actor.role}
+    return content_actor
 
 @router.post('/')
-async def create_content_actors(content_id: int, actor_id: int, role: str = None, db: Session = Depends(get_db)):
+async def create_content_actors(content_id: int, actor_id: int, role: str = None, db: AsyncSession = Depends(get_db)):
     try:
-        new_content_actor = ContentActors(content_id=content_id, actor_id=actor_id, role=role)
-        db.add(new_content_actor)
-        db.commit()
-        db.refresh(new_content_actor)
-    except:
-        raise HTTPException(status_code=400, detail="Create failed")
-    return {"content_actor_id": new_content_actor.content_actor_id, "actor_id": new_content_actor.actor_id, "role": new_content_actor.role}
+        new_content_actor = await ContentActorsService(ContentActorsRepository(db)).create_content_actors(content_id=content_id, actor_id=actor_id, role=role)
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return new_content_actor
 
 @router.put('/{content_actor_id}')
-async def update_content_actors(content_actor_id: int, content_id: int = None, actor_id: int = None, role: str = None, db: Session = Depends(get_db)):
-    content_actor = db.query(ContentActors).filter(ContentActors.content_actor_id == content_actors_id).first()
-    if content_actor is None:
-        raise HTTPException(status_code=400, detail="Сontent actor not found")
-    
-    if content_id:
-        content_actor.content_id = content_id
-    if actor_id:
-        content_actor.actor_id = actor_id
-    if role:
-        content_actor.role = role
-
-    db.commit()
-    db.refresh(content_actor)
-    return {"content_actor_id": content_actor.content_actor_id, "actor_id": content_actor.actor_id, "role": content_actor.role}
+async def update_content_actors(content_actor_id: int, content_id: int = None, actor_id: int = None, role: str = None, db: AsyncSession = Depends(get_db)):
+    try:
+        content_actor = await ContentActorsService(ContentActorsRepository(db)).update_content_actors(content_actor_id=content_actor_id, content_id=content_id, actor_id=actor_id, role=role)
+        if content_actor is None:
+            raise HTTPException(status_code=400, detail="Content actor not found")
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return content_actor
 
 @router.delete('/{content_actor_id}')
-async def delete_content_actors(content_actor_id: int, db: Session = Depends(get_db)):
-    content_actor = db.query(ContentActors).filter(ContentActors.content_actor_id == content_actor_id).first()
-    if content_actor is None:
-        raise HTTPException(status_code=400, detail="Сontent actor not found")
-
-    db.delete(content_actor)
-    db.commit()
+async def delete_content_actors(content_actor_id: int, db: AsyncSession = Depends(get_db)):
+    if not await ContentActorsService(ContentActorsRepository(db)).delete_content_actors(content_actor_id=content_actor_id):
+        raise HTTPException(status_code=400, detail="Content actor not found")
     return {"message": "Сontent actor deleted successfully"}

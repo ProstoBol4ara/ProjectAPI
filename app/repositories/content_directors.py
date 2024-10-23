@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from models import ContentDirectors
 
 class ContentDirectorsRepository:
@@ -7,7 +7,7 @@ class ContentDirectorsRepository:
 
     async def get_content_directors(self):
         content_directors = await self.db.execute(select(ContentDirectors))
-        return content_directors.scalar().all()
+        return content_directors.scalars().all()
 
     async def get_content_director(self, content_director_id: int):
         content_director = await self.db.execute(
@@ -38,7 +38,8 @@ class ContentDirectorsRepository:
         return content_director
 
     async def delete_content_director(self, content_director_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(ContentDirectors).where(ContentDirectors.content_director_id == content_director_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from models import Genres
 
 class GenresRepository:
@@ -7,7 +7,7 @@ class GenresRepository:
 
     async def get_genres(self):
         genres = await self.db.execute(select(Genres))
-        return genres.scalar().all()
+        return genres.scalars().all()
 
     async def get_genre(self, genre_id: int):
         genre = await self.db.execute(
@@ -36,7 +36,8 @@ class GenresRepository:
         return genre
 
     async def delete_genre(self, genre_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(Genres).where(Genres.genre_id == genre_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

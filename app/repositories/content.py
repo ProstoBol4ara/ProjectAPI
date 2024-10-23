@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from models import Content
 
 class ContentRepository:
@@ -7,7 +7,7 @@ class ContentRepository:
 
     async def get_contents(self):
         contents = await self.db.execute(select(Content))
-        return contents.scalar().all()
+        return contents.scalars().all()
 
     async def get_content(self, content_id: int):
         content = await self.db.execute(
@@ -48,7 +48,8 @@ class ContentRepository:
         return content
 
     async def delete_content(self, content_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(Content).where(Content.content_id == content_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

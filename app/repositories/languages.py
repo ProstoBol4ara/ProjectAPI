@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from models import Languages
 
 class LanguagesRepository:
@@ -7,7 +7,7 @@ class LanguagesRepository:
 
     async def get_languages(self):
         languages = await self.db.execute(select(Languages))
-        return languages.scalar().all()
+        return languages.scalars().all()
 
     async def get_language(self, language_id: int):
         language = await self.db.execute(
@@ -36,7 +36,8 @@ class LanguagesRepository:
         return {"language_id": language.language_id, "name": language.language_name}
 
     async def delete_language(self, language_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(Languages).where(Languages.language_id == language_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

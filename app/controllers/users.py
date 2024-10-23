@@ -1,7 +1,7 @@
-from fastapi import APIRouter, HTTPException, Depends, Response
-from database import get_db, Session
-from crypt import hash_password
-from models import Users
+from fastapi import APIRouter, HTTPException, Depends
+from database import AsyncSession, get_db
+from repositories import UsersRepository
+from services import UsersService
 
 router = APIRouter(
     prefix="/users",
@@ -9,54 +9,39 @@ router = APIRouter(
 )
 
 @router.get('/')
-async def get_users(db: Session = Depends(get_db)):
-    users = db.query(Users).all()
+async def get_users(db: AsyncSession = Depends(get_db)):
+    users = await UsersService(UsersRepository(db)).get_users()
     if users is None:
-        raise HTTPException(status_code=400, detail="Users not found")
-    return [{"user_id": user.user_id, "username": user.username} for user in users]
+        raise HTTPException(stlatus_code=400, detail="Users not found")
+    return users
 
 @router.get('/{user_id}')
-async def get_user(user_id: int, db: Session = Depends(get_db)):
-    user = db.query(Users).filter(Users.user_id == user_id).first()
+async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
+    user = await UsersService(UsersRepository(db)).get_user(user_id=user_id)
     if user is None:
         raise HTTPException(status_code=400, detail="User not found")
-    return {"user_id": user.user_id, "username": user.username}
+    return user
 
 @router.post('/')
-async def create_user(username: str, email: str, password: str, db: Session = Depends(get_db)):
+async def create_user(username: str, email: str, password: str, db: AsyncSession = Depends(get_db)):
     try:
-        password = hash_password(password)
-        new_user = Users(username=username, email=email, password_hash=password)
-        db.add(new_user)
-        db.commit()
-        db.refresh(new_user)
-    except:
-        raise HTTPException(status_code=400, detail="Create failed")
-    return {"user_id": new_user.user_id, "username": new_user.username, "email": new_user.email}
+        new_user = await UsersService(UsersRepository(db)).create_user(username=username, email=email, password=password)
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return new_user
 
 @router.put('/{user_id}')
-async def update_user(user_id: int, username: str = None, email: str = None, password: str = None, db: Session = Depends(get_db)):
-    user = db.query(Users).filter(Users.user_id == user_id).first()
-    if user is None:
-        raise HTTPException(status_code=400, detail="User not found")
-
-    if password:
-        user.password = hash_password(password)
-    if username:
-        user.username = username
-    if email:
-        user.email = email
-
-    db.commit()
-    db.refresh(user)
-    return {"user_id": user.user_id, "username": user.username, "email": user.email}
+async def update_user(user_id: int, username: str = None, email: str = None, password: str = None, db: AsyncSession = Depends(get_db)):
+    try:
+        user = await UsersService(UsersRepository(db)).update_user(user_id=user_id, username=username, email=email, password=password)
+        if user is None:
+            raise HTTPException(status_code=400, detail="User not found")
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return user
 
 @router.delete('/{user_id}')
-async def delete_user(user_id: int, db: Session = Depends(get_db)):
-    user = db.query(Users).filter(Users.user_id == user_id).first()
-    if user is None:
+async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
+    if not await UsersService(UsersRepository(db)).delete_user(user_id=user_id):
         raise HTTPException(status_code=400, detail="User not found")
-
-    db.delete(user)
-    db.commit()
     return {"message": "User deleted successfully"}

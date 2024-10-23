@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from models import PaymentMethods
 
 class PaymentMethodsRepository:
@@ -7,7 +7,7 @@ class PaymentMethodsRepository:
 
     async def get_payment_methods(self):
         payment_methods = await self.db.execute(select(PaymentMethods))
-        return users.scalar().all()
+        return payment_methods.scalars().all()
 
     async def get_payment_method(self, payment_method_id: int):
         payment_method = await self.db.execute(
@@ -42,7 +42,8 @@ class PaymentMethodsRepository:
         return payment_method
 
     async def delete_payment_method(self, payment_method_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(PaymentMethods).where(PaymentMethods.payment_method_id == payment_method_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

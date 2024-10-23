@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from models import ContentGenres
 
 class ContentGenresRepository:
@@ -7,7 +7,7 @@ class ContentGenresRepository:
 
     async def get_content_genres(self):
         content_genres = await self.db.execute(select(ContentGenres))
-        return content_genres.scalar().all()
+        return content_genres.scalars().all()
 
     async def get_content_genre(self, content_genre_id: int):
         content_genre = await self.db.execute(
@@ -38,7 +38,8 @@ class ContentGenresRepository:
         return content_genre
 
     async def delete_content_genre(self, content_genre_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(ContentGenres).where(ContentGenres.content_genre_id == content_genre_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

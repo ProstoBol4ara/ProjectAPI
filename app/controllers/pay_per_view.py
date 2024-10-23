@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
-from database import get_db, Session
-from models import PayPerView
+from repositories import PayPerViewRepository
+from database import AsyncSession, get_db
+from services import PayPerViewService
 
 router = APIRouter(
     prefix="/pay_per_views",
@@ -8,51 +9,39 @@ router = APIRouter(
 )
 
 @router.get('/')
-async def get_pay_per_views(db: Session = Depends(get_db)):
-    pay_per_views = db.query(PayPerView).all()
+async def get_pay_per_views(db: AsyncSession = Depends(get_db)):
+    pay_per_views = await PayPerViewService(PayPerViewRepository(db)).get_pay_per_views()
     if pay_per_views is None:
         raise HTTPException(status_code=400, detail="Pay Per Views not found")
-    return [{"pay_per_view_id": pay_per_view.pay_per_view_id, "amount": pay_per_view.amount, "content_id": pay_per_view.content_id} for pay_per_view in pay_per_views]
+    return pay_per_views
 
 @router.get('/{pay_per_view_id}')
-async def get_pay_per_view(pay_per_view_id: int, db: Session = Depends(get_db)):
-    pay_per_view = db.query(PayPerView).filter(PayPerView.pay_per_view_id == pay_per_view_id).first()
+async def get_pay_per_view(pay_per_view_id: int, db: AsyncSession = Depends(get_db)):
+    pay_per_view = await PayPerViewService(PayPerViewRepository(db)).get_pay_per_view(pay_per_view_id=pay_per_view_id)
     if pay_per_view is None:
         raise HTTPException(status_code=400, detail="Pay per view not found")
-    return {"pay_per_view_id": pay_per_view.pay_per_view_id, "amount": pay_per_view.amount, "content_id": pay_per_view.content_id}
+    return pay_per_view
 
 @router.post('/')
-async def create_pay_per_view(amount: float, content_id: float, db: Session = Depends(get_db)):
+async def create_pay_per_view(amount: float, content_id: float, db: AsyncSession = Depends(get_db)):
     try:
-        new_pay_per_view = PayPerView(amount=amount, content_id=content_id)
-        db.add(new_pay_per_view)
-        db.commit()
-        db.refresh(new_pay_per_view)
-    except:
-        raise HTTPException(status_code=400, detail="Create failed")
-    return {"pay_per_view_id": new_pay_per_view.pay_per_view_id, "amount": new_pay_per_view.amount, "content_id": new_pay_per_view.content_id}
+        new_pay_per_view = await PayPerViewPayPerViewService(PayPerViewRepository(db)).create_pay_per_view(amount=amount, content_id=content_id)
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return new_pay_per_view
 
 @router.put('/{pay_per_view_id}')
-async def update_pay_per_view(pay_per_view_id: int, amount: float = None, content_id: float = None, db: Session = Depends(get_db)):
-    pay_per_view = db.query(PayPerView).filter(PayPerView.pay_per_view_id == pay_per_view_id).first()
-    if pay_per_view is None:
-        raise HTTPException(status_code=400, detail="Pay per view not found")
-
-    if amount:
-        pay_per_view.amount = amount
-    if content_id:
-        pay_per_view.content_id = content_id
-
-    db.commit()
-    db.refresh(pay_per_view)
-    return {"pay_per_view_id": pay_per_view.pay_per_view_id, "amount": pay_per_view.amount, "content_id": pay_per_view.content_id}
+async def update_pay_per_view(pay_per_view_id: int, amount: float = None, content_id: float = None, db: AsyncSession = Depends(get_db)):
+    try:
+        pay_per_view = await PayPerViewService(PayPerViewRepository(db)).update_pay_per_view(pay_per_view_id=pay_per_view_id)
+        if pay_per_view is None:
+            raise HTTPException(status_code=400, detail="Pay per view not found")
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return pay_per_view
 
 @router.delete('/{pay_per_view_id}')
-async def delete_pay_per_view(pay_per_view_id: int, db: Session = Depends(get_db)):
-    pay_per_view = db.query(PayPerView).filter(PayPerView.pay_per_view_id == pay_per_view_id).first()
-    if pay_per_view is None:
+async def delete_pay_per_view(pay_per_view_id: int, db: AsyncSession = Depends(get_db)):
+    if not await PayPerViewService(PayPerViewRepository(db)).delete_pay_per_view(pay_per_view_id=pay_per_view_id):
         raise HTTPException(status_code=400, detail="Pay per view not found")
-
-    db.delete(pay_per_view)
-    db.commit()
     return {"message": "Pay per view deleted successfully"}

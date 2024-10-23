@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from models import Directors
 
 class DirectorsRepository:
@@ -7,7 +7,7 @@ class DirectorsRepository:
 
     async def get_directors(self):
         directors = await self.db.execute(select(Directors))
-        return directors.scalar().all()
+        return directors.scalars().all()
 
     async def get_director(self, director_id: int):
         director = await self.db.execute(
@@ -42,7 +42,8 @@ class DirectorsRepository:
         return director
 
     async def delete_director(self, director_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(Directors).where(Directors.director_id == director_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

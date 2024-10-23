@@ -5,17 +5,20 @@ class UserRolesService:
         self.user_roles_repository = user_roles_repository
 
     async def get_user_roles(self):
-        return await self.user_roles_repository.get_user_roles()
+        user_roles = await self.user_roles_repository.get_user_roles()
+        return None if user_roles is None else [{"user_role_id": user_role.user_role_id, "user_id": user_role.user_id, "role_id": user_role.role_id} for user_role in user_roles]
 
     async def get_user_role(self, user_role_id: int):
-        return await self.user_roles_repository.get_user_role(user_role_id=user_role_id)
+        user_role = await self.user_roles_repository.get_user_role(user_role_id=user_role_id)
+        return None if user_role is None else {"user_role_id": user_role.user_role_id, "user_id": user_role.user_id, "role_id": user_role.role_id}
 
     async def create_user_role(self, user_id: int, role_id: int):
-        return await self.user_roles_repository.create_user_role(user_id=user_id, role_id=role_id)
+        new_user_role = await self.user_roles_repository.create_user_role(user_id=user_id, role_id=role_id)
+        return {"user_role_id": new_user_role.user_role_id, "user_id": new_user_role.user_id, "role_id": new_user_role.role_id}
 
     async def update_user_role(self, user_role_id: int, user_id: int = None, role_id: int = None):
-        return await self.user_roles_repository.update_user_role(user_role_id=user_role_id, user_id=user_id, role_id=role_id)
+        user_role = await self.user_roles_repository.update_user_role(user_role_id=user_role_id, user_id=user_id, role_id=role_id)
+        return None if user_role is None else {"user_role_id": user_role.user_role_id, "user_id": user_role.user_id, "role_id": user_role.role_id}
 
     async def delete_user_role(self, user_role_id: int):
-        await self.user_roles_repository.delete_user_role(user_role_id=user_role_id)
-    
+        return await self.user_roles_repository.delete_user_role(user_role_id=user_role_id)

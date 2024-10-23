@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from models import Episodes
 
 class EpisodesRepository:
@@ -7,7 +7,7 @@ class EpisodesRepository:
 
     async def get_episodes(self):
         episodes = await self.db.execute(select(Episodes))
-        return episodes.scalar().all()
+        return episodes.scalars().all()
 
     async def get_episode(self, episode_id: int):
         episode = await self.db.execute(
@@ -48,7 +48,8 @@ class EpisodesRepository:
         return episode
 
     async def delete_episode(self, episode_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(Episodes).where(Episodes.episode_id == episode_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

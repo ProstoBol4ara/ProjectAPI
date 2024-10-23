@@ -1,5 +1,5 @@
+from database import AsyncSession, select, delete
 from models import UserSubscriptions
-from database import AsyncSession
 from datetime import datetime
 
 class UserSubscriptionsRepository:
@@ -8,7 +8,7 @@ class UserSubscriptionsRepository:
 
     async def get_user_subscriptions(self):
         user_subscriptions = await self.db.execute(select(UserSubscriptions))
-        return user_subscriptions.scalar().all()
+        return user_subscriptions.scalars().all()
 
     async def get_user_subscription(self, user_subscription_id: int):
         user_subscription = await self.db.execute(
@@ -45,7 +45,8 @@ class UserSubscriptionsRepository:
         return user_subscription
 
     async def delete_user_subscription(self, user_subscription_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(UserSubscriptions).where(UserSubscriptions.user_subscription_id == user_subscription_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

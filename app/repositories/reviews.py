@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from models import Reviews
 
 class ReviewsRepository:
@@ -7,7 +7,7 @@ class ReviewsRepository:
 
     async def get_reviews(self):
         reviews = await self.db.execute(select(Reviews))
-        return reviews.scalar().all()
+        return reviews.scalars().all()
 
     async def get_review(self, review_id: int):
         review = await self.db.execute(
@@ -42,7 +42,8 @@ class ReviewsRepository:
         return review
 
     async def delete_review(self, review_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(Users).where(Users.user_id == user_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

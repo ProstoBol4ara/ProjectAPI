@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from models import WatchHistory
 
 class WatchHistoryRepository:
@@ -7,7 +7,7 @@ class WatchHistoryRepository:
 
     async def get_watch_historys(self):
         watch_historys = await self.db.execute(select(WatchHistory))
-        return watch_historys.scalar().all()
+        return watch_historys.scalars().all()
 
     async def get_watch_history(self, watch_history_id: int):
         watch_history = await self.db.execute(
@@ -38,7 +38,8 @@ class WatchHistoryRepository:
         return watch_history
 
     async def delete_watch_history(self, watch_history_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(WatchHistory).where(WatchHistory.watch_history_id == watch_history_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

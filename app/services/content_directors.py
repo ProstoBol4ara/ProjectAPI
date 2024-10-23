@@ -21,4 +21,4 @@ class ContentDirectorsService:
         return None if content_director is None else {"content_director_id": content_director.content_director_id, "content_id": content_director.content_id, "director_id": content_director.director_id}
     
     async def delete_content_director(self, content_director_id: int):
-        await self.content_directors_repository.delete_content_director(content_director_id=content_director_id)
+        return await self.content_directors_repository.delete_content_director(content_director_id=content_director_id)

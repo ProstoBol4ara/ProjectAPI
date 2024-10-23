@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from datetime import datetime
 from models import Actors
 
@@ -8,7 +8,7 @@ class ActorsRepository:
     
     async def get_actors(self):
         actors = await self.db.execute(select(Actors))
-        return actors.scalar().all()
+        return actors.scalars().all()
 
     async def get_actor(self, actor_id: int):
         actor = await self.db.execute(
@@ -43,7 +43,8 @@ class ActorsRepository:
         return actor
 
     async def delete_actor(self, actor_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(Actors).where(Actors.actor_id == actor_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

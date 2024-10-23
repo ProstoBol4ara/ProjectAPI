@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
-from database import get_db, Session
-from datetime import datetime
-from models import Actors
+from database import AsyncSession, get_db
+from repositories import ActorsRepository
+from services import ActorsService
 
 router = APIRouter(
     prefix="/actors",
@@ -9,55 +9,39 @@ router = APIRouter(
 )
 
 @router.get('/')
-async def get_actors(db: Session = Depends(get_db)):
-    actors = db.query(Actors).all()
+async def get_actors(db: AsyncSession = Depends(get_db)):
+    actors = await ActorsService(ActorsRepository(db)).get_actors()
     if actors is None:
         raise HTTPException(status_code=400, detail="Actors not found")
-    return [{"actor_id": actor.actor_id, "actor_name": actor.actor_name, "biography": actor.biography, "birth_date": actor.birth_date} for actor in actors]
+    return actors
 
 @router.get('/{actor_id}')
-async def get_actor(actor_id: int, db: Session = Depends(get_db)):
-    actor = db.query(Actors).filter(Actors.actor_id == actor_id).first()
+async def get_actor(actor_id: int, db: AsyncSession = Depends(get_db)):
+    actor = await ActorsService(ActorsRepository(db)).get_actor(actor_id=actor_id)
     if actor is None:
         raise HTTPException(status_code=400, detail="Actor not found")
-    return {"actor_id": actor.actor_id, "actor_name": actor.actor_name, "biography": actor.biography, "birth_date": actor.birth_date}
+    return actor
 
 @router.post('/')
-async def create_actor(actor_name: str, biography: str = None, birth_date: str = None, db: Session = Depends(get_db)):
+async def create_actor(actor_name: str, biography: str = None, birth_date: str = None, db: AsyncSession = Depends(get_db)):
     try:
-        if not birth_date is None:
-            birth_date = datetime.strptime(birth_date, '%d.%m.%Y').date()
-        new_actor = Actors(actor_name=actor_name, biography=biography, birth_date=birth_date)
-        db.add(new_actor)
-        db.commit()
-        db.refresh(new_actor)   
-    except:
-        raise HTTPException(status_code=400, detail="Create failed")
-    return {"actor_id": new_actor.actor_id, "name": new_actor.actor_name}
+        new_actor = await ActorsService(ActorsRepository(db)).create_actor(actor_name=actor_name, biography=biography, birth_date=birth_date)
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return new_actor
 
 @router.put('/{actor_id}')
-async def update_actor(actor_id: int, actor_name: str = None, biography: str = None, birth_date: str = None, db: Session = Depends(get_db)):
-    actor = db.query(Actors).filter(Actors.actor_id == actor_id).first()
-    if actor is None:
-        raise HTTPException(status_code=400, detail="Actor not found")
-
-    if actor_name:
-        actor.actor_name = actor_name
-    if biography:
-        actor.biography = biography
-    if birth_date:
-        actor.birth_date = birth_date
-    
-    db.commit()
-    db.refresh(actor)
-    return {"actor_id": actor.actor_id, "name": actor.actor_name}
+async def update_actor(actor_id: int, actor_name: str = None, biography: str = None, birth_date: str = None, db: AsyncSession = Depends(get_db)):
+    try:
+        actor = await ActorsService(ActorsRepository(db)).update_actor(actor_id=actor_id, actor_name=actor_name, biography=biography, birth_date=birth_date)
+        if actor is None:
+            raise HTTPException(status_code=400, detail="Actor not found")
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return actor
 
 @router.delete('/{actor_id}')
-async def delete_actor(actor_id: int, db: Session = Depends(get_db)):
-    actor = db.query(Actors).filter(Actors.actor_id == actor_id).first()
-    if actor is None:
+async def delete_actor(actor_id: int, db: AsyncSession = Depends(get_db)):
+    if not await ActorsService(ActorsRepository(db)).delete_actor(actor_id=actor_id): 
         raise HTTPException(status_code=400, detail="Actor not found")
-
-    db.delete(actor)
-    db.commit()
     return {"message": "Actors deleted successfully"}

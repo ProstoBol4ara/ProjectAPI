@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  postgres-database:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: 123321
+      POSTGRES_DB: test
+    volumes:
+      - ../postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  api:
+    image: python:3.12
+    working_dir: /api
+    volumes:
+      - ../../app:/api/app
+      - ../../requirements.txt:/api/requirements.txt
+    ports:
+      - "8000:8000"
+    command: >
+      bash -c "pip install --no-cache-dir -r /api/requirements.txt && 
+      fastapi run /api/app/main.py --host 0.0.0.0 --port 8000"

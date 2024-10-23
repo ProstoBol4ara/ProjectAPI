@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
-from database import get_db, Session
-from models import Payments
+from repositories import PaymentsRepository
+from database import AsyncSession, get_db
+from services import PaymentsService
 
 router = APIRouter(
     prefix="/payments",
@@ -8,51 +9,39 @@ router = APIRouter(
 )
 
 @router.get('/')
-async def get_payments(db: Session = Depends(get_db)):
-    payments = db.query(Payments).all()
+async def get_payments(db: AsyncSession = Depends(get_db)):
+    payments = await PaymentsService(PaymentsRepository(db)).get_payments()
     if payments is None:
         raise HTTPException(status_code=400, detail="Payments not found")
-    return [{"payment_id": payment.payment_id, "pay_per_view_id": payment.pay_per_view_id, "payment_method_id": payment.payment_method_id} for payment in payments]
+    return payments
 
 @router.get('/{payment_id}')
-async def get_payment(payment_id: int, db: Session = Depends(get_db)):
-    payment = db.query(Payments).filter(Payments.payment_id == payment_id).first()
+async def get_payment(payment_id: int, db: AsyncSession = Depends(get_db)):
+    payment = await PaymentsService(PaymentsRepository(db)).get_payment(payment_id=payment_id)
     if payment is None:
         raise HTTPException(status_code=400, detail="User not found")
-    return {"payment_id": payment.payment_id, "pay_per_view_id": payment.pay_per_view_id, "payment_method_id": payment.payment_method_id}
+    return payment
 
 @router.post('/')
-async def create_payment(payment_method_id: int, pay_per_view_id: int, db: Session = Depends(get_db)):
+async def create_payment(payment_method_id: int, pay_per_view_id: int, db: AsyncSession = Depends(get_db)):
     try:
-        new_payment = Payments(payment_method_id = payment_method_id, pay_per_view_id = pay_per_view_id)
-        db.add(new_payment)
-        db.commit()
-        db.refresh(new_payment)
-    except:
-        raise HTTPException(status_code=400, detail="Create failed")
-    return {"payment_id": new_payment.payment_id, "payment_method_id": new_payment.payment_method_id, "pay_per_view_id": new_payment.pay_per_view_id}
+        new_payment = await PaymentsService(PaymentsRepository(db)).create_payment(payment_method_id = payment_method_id, pay_per_view_id = pay_per_view_id)
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return new_payment
 
 @router.put('/{payment_id}')
-async def update_payment(payment_id: int, payment_method_id: int, pay_per_view_id: int, db: Session = Depends(get_db)):
-    payment = db.query(Payments).filter(Payments.payment_id == payment_id).first()
-    if payment is None:
-        raise HTTPException(status_code=400, detail="User not found")
-
-    if pay_per_view_id:
-        payment.pay_per_view_id = pay_per_view_id
-    if payment_method_id:
-        payment.payment_method_id = payment_method_id
-
-    db.commit()
-    db.refresh(payment)
-    return {"payment_id": payment.payment_id, "pay_per_view_id": payment.pay_per_view_id, "payment_method_id": payment.payment_method_id}
+async def update_payment(payment_id: int, payment_method_id: int, pay_per_view_id: int, db: AsyncSession = Depends(get_db)):
+    try:
+        payment = await PaymentsService(PaymentsRepository(db)).update_payment(payment_id=payment_id, payment_method_id = payment_method_id, pay_per_view_id = pay_per_view_id)
+        if payment is None:
+            raise HTTPException(status_code=400, detail="User not found")
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return payment
 
 @router.delete('/{payment_id}')
-async def delete_payment(payment_id: int, db: Session = Depends(get_db)):
-    payment = db.query(Payments).filter(Payments.payment_id == payment_id).first()
-    if payment is None:
+async def delete_payment(payment_id: int, db: AsyncSession = Depends(get_db)):
+    if not await PaymentsService(PaymentsRepository(db)).delete_payment(payment_id=payment_id):
         raise HTTPException(status_code=400, detail="User not found")
-
-    db.delete(payment)
-    db.commit()
     return {"message": "User deleted successfully"}

@@ -9,7 +9,7 @@ class ActorsService:
         return None if actors is None else [{"actor_id": actor.actor_id, "actor_name": actor.actor_name, "biography": actor.biography, "birth_date": actor.birth_date} for actor in actors]
 
     async def get_actor(self, actor_id: int):
-        actor = self.actors_repository.get_actor(actor_id=actor_id)
+        actor = await self.actors_repository.get_actor(actor_id=actor_id)
         return None if actor is None else {"actor_id": actor.actor_id, "actor_name": actor.actor_name, "biography": actor.biography, "birth_date": actor.birth_date}
         
     async def create_actor(self, actor_name: str, biography: str = None, birth_date: str = None):
@@ -21,4 +21,4 @@ class ActorsService:
         return None if actor is None else {"actor_id": actor.actor_id, "actor_name": actor.actor_name, "biography": actor.biography, "birth_date": actor.birth_date}
 
     async def delete_actor(self, actor_id: int):
-        await self.actors_repository.delete_actor(actor_id=actor_id)
+        return await self.actors_repository.delete_actor(actor_id=actor_id)

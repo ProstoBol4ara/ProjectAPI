@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from models import PayPerView
 
 class PayPerViewRepository:
@@ -7,7 +7,7 @@ class PayPerViewRepository:
 
     async def get_pay_per_views(self):
         pay_per_views = await self.db.execute(select(PayPerView))
-        return pay_per_views.scalar().all()
+        return pay_per_views.scalars().all()
     
     async def get_pay_per_view(self, pay_per_view_id: int):
         pay_per_view = await self.db.execute(
@@ -38,7 +38,8 @@ class PayPerViewRepository:
         return pay_per_view
 
     async def delete_pay_per_view(self, pay_per_view_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(PayPerView).where(PayPerView.pay_per_view_id == pay_per_view_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

@@ -8,7 +8,7 @@ class ContentActorsService:
         content_actors = await self.content_actors_repository.get_content_actors()
         return None if content_actors is None else [{"content_actor_id": content_actor.content_actor_id, "content_id": content_actor.content_id, "actor_id": content_actor.actor_id, "role": content_actor.role} for content_actor in content_actors]
 
-    async def get_content_actors(self, content_actor_id: int):
+    async def get_content_actor(self, content_actor_id: int):
         content_actor = await self.content_actors_repository.get_content_actor(content_actor_id=content_actor_id)
         return None if content_actor is None else {"content_actor_id": content_actor.content_actor_id, "content_id": content_actor.content_id, "actor_id": content_actor.actor_id, "role": content_actor.role}
 
@@ -21,5 +21,5 @@ class ContentActorsService:
         return None if content_actor is None else {"content_actor_id": content_actor.content_actor_id, "actor_id": content_actor.actor_id, "role": content_actor.role}
 
     async def delete_content_actors(self, content_actor_id: int):
-        await self.content_actors_repository.delete_content_actors(content_actor_id=content_actor_id)
+        return await self.content_actors_repository.delete_content_actors(content_actor_id=content_actor_id)
     

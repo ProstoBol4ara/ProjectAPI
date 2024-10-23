@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
-from database import get_db, Session
-from models import Countries
+from repositories import CountriesRepository
+from database import AsyncSession, get_db
+from services import CountriesService
 
 router = APIRouter(
     prefix="/countries",
@@ -8,49 +9,39 @@ router = APIRouter(
 )
 
 @router.get('/')
-async def get_countries(db: Session = Depends(get_db)):
-    countries = db.query(Countries).all()
+async def get_countries(db: AsyncSession = Depends(get_db)):
+    countries = await CountriesService(CountriesRepository(db)).get_countries()
     if countries is None:
-        raise HTTPException(status_code=400, detail="Countries not found")
-    return [{"country_id": country.country_id, "country_name": country.country_name} for country in countries]
+        raise HTTPException(status_code=400, detail="Country not found")
+    return countries
 
 @router.get('/{country_id}')
-async def get_country(country_id: int, db: Session = Depends(get_db)):
-    country = db.query(Countries).filter(Countries.country_id == country_id).first()
+async def get_country(country_id: int, db: AsyncSession = Depends(get_db)):
+    country = await CountriesService(CountriesRepository(db)).get_country(country_id=country_id)
     if country is None:
-        raise HTTPException(status_code=400, detail="Countrie not found")
-    return {"country_id": country.country_id, "country_name": country.country_name}
+        raise HTTPException(status_code=400, detail="Country not found")
+    return country
 
 @router.post('/')
-async def create_country(country_name: str, db: Session = Depends(get_db)):
+async def create_country(country_name: str, db: AsyncSession = Depends(get_db)):
     try:
-        new_country = Countries(country_name=country_name)
-        db.add(new_country)
-        db.commit()
-        db.refresh(new_country)
-    except:
-        raise HTTPException(status_code=400, detail="Create failed")
-    return {"country_id": new_country.country_id, "country_name": new_country.country_name}
+        new_country = await CountriesService(CountriesRepository(db)).create_country(country_name=country_name)
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return new_country
 
 @router.put('/{country_id}')
-async def update_country(country_id: int, country_name: str = None, db: Session = Depends(get_db)):
-    country = db.query(Countries).filter(Countries.country_id == country_id).first()
-    if country is None:
-        raise HTTPException(status_code=400, detail="Countrie not found")
-
-    if country_name:
-        country.country_name = country_name
-
-    db.commit()
-    db.refresh(country)
-    return {"country_id": country.country_id, "country_name": country.country_name}
+async def update_country(country_id: int, country_name: str = None, db: AsyncSession = Depends(get_db)):
+    try:
+        country = await CountriesService(CountriesRepository(db)).update_country(country_id=country_id, country_name=country_name)
+        if country is None:
+            raise HTTPException(status_code=400, detail="Country not found")
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return country
 
 @router.delete('/{country_id}')
-async def delete_country(country_id: int, db: Session = Depends(get_db)):
-    country = db.query(Countries).filter(Countries.country_id == country_id).first()
-    if country is None:
-        raise HTTPException(status_code=400, detail="Countrie not found")
-
-    db.delete(country)
-    db.commit()
+async def delete_country(country_id: int, db: AsyncSession = Depends(get_db)):
+    if not await CountriesService(CountriesRepository(db)).delete_country(country_id=country_id):
+        raise HTTPException(status_code=400, detail="Country not found")
     return {"message": "Countrie deleted successfully"}

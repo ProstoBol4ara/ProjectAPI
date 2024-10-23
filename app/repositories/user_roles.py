@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from models import UserRoles
 
 class UserRolesRepository:
@@ -7,7 +7,7 @@ class UserRolesRepository:
 
     async def get_user_roles(self):
         user_roles = await self.db.execute(select(UserRoles))
-        return user_roles.scalar().all()
+        return user_roles.scalars().all()
 
     async def get_user_role(self, user_role_id: int):
         user_role = await self.db.execute(
@@ -38,7 +38,8 @@ class UserRolesRepository:
         return user_role
 
     async def delete_user_role(self, user_role_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(UserRoles).where(UserRoles.user_role_id == user_role_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
-from database import get_db, Session
-from models import Notifications
+from repositories import NotificationsRepository
+from services import NotificationsService
+from database import AsyncSession, get_db
 
 router = APIRouter(
     prefix="/notifications",
@@ -8,51 +9,39 @@ router = APIRouter(
 )
 
 @router.get('/')
-async def get_notifications(db: Session = Depends(get_db)):
-    notifications = db.query(Notifications).all()
+async def get_notifications(db: AsyncSession = Depends(get_db)):
+    notifications = await NotificationsService(NotificationsRepository(db)).get_notifications()
     if notifications is None:
-        raise HTTPException(status_code=400, detail="Notifications not found")
-    return [{"notification_id": notification.notification_id, "message": notification.message, "user_id": notification.user_id} for notification in notifications]
+        raise HTTPException(status_code=400, detail="Notification not found")
+    return notifications
 
 @router.get('/{notification_id}')
-async def get_notification(notification_id: int, db: Session = Depends(get_db)):
-    notification = db.query(Notifications).filter(Notifications.notification_id == notification_id).first()
+async def get_notification(notification_id: int, db: AsyncSession = Depends(get_db)):
+    notification = await NotificationsService(NotificationsRepository(db)).get_notification(notification_id=notification_id)
     if notification is None:
         raise HTTPException(status_code=400, detail="Notification not found")
-    return {"notification_id": notification.notification_id, "message": notification.message, "user_id": notification.user_id}
+    return notification
 
 @router.post('/')
-async def create_notification(message: str, user_id: int = None, db: Session = Depends(get_db)):
+async def create_notification(message: str, user_id: int = None, db: AsyncSession = Depends(get_db)):
     try:
-        new_notification = Notifications(message=message, user_id=user_id)
-        db.add(new_notification)
-        db.commit()
-        db.refresh(new_notification)
-    except:
-        raise HTTPException(status_code=400, detail="Create failed")
-    return {"notification_id": new_notification.notification_id, "message": new_notification.message, "user_id": new_notification.user_id}
+        new_notification = await NotificationsService(NotificationsRepository(db)).create_notification(message=message, user_id=user_id)
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return new_notification
 
 @router.put('/{notification_id}')
-async def update_notification(notification_id: int, message: str, user_id: int = None, db: Session = Depends(get_db)):
-    notification = db.query(Notifications).filter(Notifications.notification_id == notification_id).first()
-    if notification is None:
-        raise HTTPException(status_code=400, detail="Notification not found")
-
-    if message:
-        notification.message = message
-    if user_id:
-        notification.user_id = user_id
-
-    db.commit()
-    db.refresh(notification)
-    return {"notification_id": notification.notification_id, "message": notification.message, "user_id": notification.user_id}
+async def update_notification(notification_id: int, message: str, user_id: int = None, db: AsyncSession = Depends(get_db)):
+    try:
+        notification = await NotificationsService(NotificationsRepository(db)).update_notification(notification_id=notification_id, message=message, user_id=user_id)
+        if notification is None:
+            raise HTTPException(status_code=400, detail="Notification not found")
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return notification
 
 @router.delete('/{notification_id}')
-async def delete_notification(notification_id: int, db: Session = Depends(get_db)):
-    notification = db.query(Notifications).filter(Notifications.notification_id == notification_id).first()
-    if notification is None:
+async def delete_notification(notification_id: int, db: AsyncSession = Depends(get_db)):
+    if not await NotificationsService(NotificationsRepository(db)).delete_notification(notification_id=notification_id):
         raise HTTPException(status_code=400, detail="Notification not found")
-
-    db.delete(notification)
-    db.commit()
     return {"message": "Notification deleted successfully"}

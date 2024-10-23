@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
-from database import get_db, Session
-from models import Episodes
+from repositories import EpisodesRepository
+from database import AsyncSession, get_db
+from services import EpisodesService
 
 router = APIRouter(
     prefix="/episodes",
@@ -8,64 +9,39 @@ router = APIRouter(
 )
 
 @router.get('/')
-async def get_episodes(db: Session = Depends(get_db)):
-    episodes = db.query(Episodes).all()
+async def get_episodes(db: AsyncSession = Depends(get_db)):
+    episodes = await EpisodesService(EpisodesRepository(db)).get_episodes()
     if episodes is None:
         raise HTTPException(status_code=400, detail="Episodes not found")
-    return [{"episode_id": episode.episode_id, "content_id": episode.content_id, "season_number": episode.season_number, "episode_number": episode.episode_number, "title": episode.title, "release_date": episode.release_date, "episode_path": episode.episode_path} for episode in episodes]
+    return 
 
 @router.get('/{episode_id}')
-async def get_episode(episode_id: int, db: Session = Depends(get_db)):
-    episode = db.query(Episodes).filter(Episodes.episode_id == episode_id).first()
+async def get_episode(episode_id: int, db: AsyncSession = Depends(get_db)):
+    episode = await EpisodesService(EpisodesRepository(db)).get_episode(episode_id=episode_id)
     if episode is None:
-        raise HTTPException(status_code=400, detail="User not found")
-    return {"episode_id": episode.episode_id, "content_id": episode.content_id, "season_number": episode.season_number, "episode_number": episode.episode_number, "title": episode.title, "release_date": episode.release_date, "episode_path": episode.episode_path}
+        raise HTTPException(status_code=400, detail="Episode not found")
+    return episode
 
 @router.post('/')
-async def create_episode(content_id: int, season_number: int = None, episode_number: int = None, title: str = None, release_date: str = None, episode_path: str = None, db: Session = Depends(get_db)):
+async def create_episode(content_id: int, season_number: int = None, episode_number: int = None, title: str = None, release_date: str = None, episode_path: str = None, db: AsyncSession = Depends(get_db)):
     try:
-        if not release_date is None:
-            release_date = datetime.strptime(release_date, '%d.%m.%Y').date()
-        new_episode = Episodes(content_id=content_id, season_number=season_number, episode_number=episode_number, title=title, release_date=release_date, episode_path=episode_path)
-        db.add(new_episode)
-        db.commit()
-        db.refresh(new_episode)
-    except:
-        raise HTTPException(status_code=400, detail="Create failed")
-    return {"episode_id": new_episode.episode_id, "content_id": new_episode.content_id, "season_number": new_episode.season_number, "episode_number": new_episode.episode_number, "title": new_episode.title, "release_date": new_episode.release_date, "episode_path": new_episode.episode_path}
+        new_episode = await EpisodesService(EpisodesRepository(db)).create_episode(content_id=content_id, season_number=season_number, episode_number=episode_number, title=title, release_date=release_date, episode_path=episode_path)
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return new_episode
 
 @router.put('/{episode_id}')
-async def update_episode(episode_id: int, content_id: int = None, season_number: int = None, episode_number: int = None, title: str = None, release_date: str = None, episode_path: str = None, db: Session = Depends(get_db)):
+async def update_episode(episode_id: int, content_id: int = None, season_number: int = None, episode_number: int = None, title: str = None, release_date: str = None, episode_path: str = None, db: AsyncSession = Depends(get_db)):
     try:
-        episode = db.query(Episodes).filter(Episodes.episode_id == episode_id).first()
+        episode = await EpisodesService(EpisodesRepository(db)).update_episode(episode_id=episode_id, content_id=content_id, season_number=season_number, episode_number=episode_number, title=title, release_date=release_date, episode_path=episode_path)
         if episode is None:
-            raise HTTPException(status_code=400, detail="User not found")
-
-        if title:
-            episode.title = title
-        if content_id:
-            episode.content_id = content_id
-        if release_date:
-            episode.release_date = datetime.strptime(release_date, '%d.%m.%Y').date()
-        if episode_path:
-            episode.episode_path = episode_path
-        if season_number:
-            episode.season_number = season_number
-        if episode_number:
-            episode.episode_number = episode_number
-
-        db.commit()
-        db.refresh(episode)
-    except:
-        raise HTTPException(status_code=400, detail="Update failed")
-    return {"episode_id": episode.episode_id, "content_id": episode.content_id, "season_number": episode.season_number, "episode_number": episode.episode_number, "title": episode.title, "release_date": episode.release_date, "episode_path": episode.episode_path}
+            raise HTTPException(status_code=400, detail="Episode not found")
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=f"{ex}")
+    return episode
 
 @router.delete('/{episode_id}')
-async def delete_episode(episode_id: int, db: Session = Depends(get_db)):
-    episode = db.query(Episodes).filter(Episodes.episode_id == episode_id).first()
-    if episode is None:
-        raise HTTPException(status_code=400, detail="User not found")
-
-    db.delete(episode)
-    db.commit()
+async def delete_episode(episode_id: int, db: AsyncSession = Depends(get_db)):
+    if not await EpisodesService(EpisodesRepository(db)).delete_episode(episode_id=episode_id):
+        raise HTTPException(status_code=400, detail="Episode not found")
     return {"message": "User deleted successfully"}

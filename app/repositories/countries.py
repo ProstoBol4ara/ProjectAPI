@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from models import Countries
 
 class CountriesRepository:
@@ -7,7 +7,7 @@ class CountriesRepository:
 
     async def get_countries(self):
         countries = await self.db.execute(select(Countries))
-        return countries.scalar().all()
+        return countries.scalars().all()
 
     async def get_country(self, country_id: int):
         country = await self.db.execute(
@@ -36,7 +36,8 @@ class CountriesRepository:
         return country
 
     async def delete_country(self, country_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(Countries).where(Countries.country_id == country_id)
         )
         await self.db.commit()
+        return result.rowcount > 0

@@ -1,4 +1,4 @@
-from database import AsyncSession
+from database import AsyncSession, select, delete
 from models import Favorites
 
 class FavoritesRepository:
@@ -7,7 +7,7 @@ class FavoritesRepository:
 
     async def get_favorites(self):
         favorites = await self.db.execute(select(Favorites))
-        return favorites.scalar().all()
+        return favorites.scalars().all()
 
     async def get_favorite(self, favorite_id: int):
         favorite = await self.db.execute(
@@ -38,7 +38,8 @@ class FavoritesRepository:
         return favorite
 
     async def delete_favorite(self, favorite_id: int):
-        await self.db.execute(
+        result = await self.db.execute(
             delete(Favorites).where(Favorites.favorite_id == favorite_id)
         )
         await self.db.commit()
+        return result.rowcount > 0
