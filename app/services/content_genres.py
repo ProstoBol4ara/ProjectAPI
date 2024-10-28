@@ -6,11 +6,11 @@ class ContentGenresService:
     
     async def get_content_genres(self):
         content_genres = await self.content_genres_repository.get_content_genres()
-        return None if content_genres is None else [{"content_genre_id": content_genre, "content_id": content_genre.content_id, "genre_id": content_genre.genre_id} for content_genre in content_genres]
+        return None if content_genres is None else [{"content_genre_id": content_genre.content_genre_id, "content_id": content_genre.content_id, "genre_id": content_genre.genre_id} for content_genre in content_genres]
 
     async def get_content_genre(self, content_genre_id: int):
         content_genre = await self.content_genres_repository.get_content_genre(content_genre_id=content_genre_id)
-        return None if content_genre is None else {"content_genre_id": content_genre, "content_id": content_genre.content_id, "genre_id": content_genre.genre_id}
+        return None if content_genre is None else {"content_genre_id": content_genre.content_genre_id, "content_id": content_genre.content_id, "genre_id": content_genre.genre_id}
 
     async def create_content_genre(self, content_id: int, genres_id: int):
         new_content_genre = await self.content_genres_repository.create_content_genre(content_id=content_id, genres_id=genres_id)

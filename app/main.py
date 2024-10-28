@@ -1,7 +1,5 @@
 from controllers import router
-from fastapi import FastAPI
-
-app = FastAPI()
+from startup import app
 
 app.include_router(router=router)
 
