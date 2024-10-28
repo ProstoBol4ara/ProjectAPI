@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException, Depends
+from api_decorators import handle_exceptions
 from repositories import LanguagesRepository
 from database import AsyncSession, get_db
+from fastapi import APIRouter, Depends
 from services import LanguagesService
 from responses.languages import *
 
@@ -9,6 +10,7 @@ router = APIRouter(
     tags=["languages"]
 )
 
+@handle_exceptions(status_code=400)
 @router.get('/', summary="Fetch all languages", responses=get_languages)
 async def get_languages(db: AsyncSession = Depends(get_db)):
     """
@@ -18,10 +20,9 @@ async def get_languages(db: AsyncSession = Depends(get_db)):
     """
 
     languages = await LanguagesService(LanguagesRepository(db)).get_languages()
-    if languages is None:
-        raise HTTPException(status_code=400, detail="Languages not found")
     return languages
 
+@handle_exceptions(status_code=400)
 @router.get('/{language_id}', summary="Fetch language by id", responses=get_language)
 async def get_language(language_id: int, db: AsyncSession = Depends(get_db)):
     """
@@ -31,10 +32,9 @@ async def get_language(language_id: int, db: AsyncSession = Depends(get_db)):
     """
 
     language = await LanguagesService(LanguagesRepository(db)).get_language(language_id=language_id)
-    if language is None:
-        raise HTTPException(status_code=400, detail="Language not found")
     return language
 
+@handle_exceptions(status_code=400)
 @router.post('/', summary="Create language", responses=create_language)
 async def create_language(language_name: str, db: AsyncSession = Depends(get_db)):
     """
@@ -47,12 +47,10 @@ async def create_language(language_name: str, db: AsyncSession = Depends(get_db)
         }
     """
 
-    try:
-        new_language = await LanguagesService(LanguagesRepository(db)).create_language(language_name=language_name)
-    except:
-        raise HTTPException(status_code=400, detail="Create failed")
+    new_language = await LanguagesService(LanguagesRepository(db)).create_language(language_name=language_name)
     return new_language
 
+@handle_exceptions(status_code=400)
 @router.put('/{language_id}', summary="Update language by id", responses=update_language)
 async def update_language(language_id: int, language_name: str = None, db: AsyncSession = Depends(get_db)):
     """
@@ -66,10 +64,9 @@ async def update_language(language_id: int, language_name: str = None, db: Async
     """
 
     language = await LanguagesService(LanguagesRepository(db)).update_language(language_id=language_id, language_name=language_name)
-    if language is None:
-        raise HTTPException(status_code=400, detail="Language not found")
     return language
 
+@handle_exceptions(status_code=400)
 @router.delete('/{language_id}', summary="Delete language by id", responses=delete_language)
 async def delete_language(language_id: int, db: AsyncSession = Depends(get_db)):
     """
@@ -78,6 +75,5 @@ async def delete_language(language_id: int, db: AsyncSession = Depends(get_db)):
         DELETE /api/languages/1
     """
 
-    if not await LanguagesService(LanguagesRepository(db)).delete_language(language_id=language_id):
-        raise HTTPException(status_code=400, detail="Language not found")
+    await LanguagesService(LanguagesRepository(db)).delete_language(language_id=language_id)
     return {"message": "Language deleted successfully"}

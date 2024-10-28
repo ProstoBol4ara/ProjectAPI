@@ -24,7 +24,7 @@ class UserRolesRepository:
 
     async def update_user_role(self, user_role_id: int, user_id: int = None, role_id: int = None):
         user_role = await self.db.execute(
-            select(UserRoles).where(UserRoles.user_id == user_id)
+            select(UserRoles).where(UserRoles.user_role_id == user_role_id)
         )
         user_role = user_role.scalar_one_or_none()
 

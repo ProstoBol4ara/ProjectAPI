@@ -10,7 +10,10 @@ class GenresService:
 
     async def get_genre(self, genre_id: int):
         genre = await self.genres_repository.get_genre(genre_id=genre_id)
-        return None if genre is None else {"genre_id": genre.genre_id, "genre_name": genre.genre_name}
+
+        if not genre: raise ValueError("Genre not found")
+
+        return {"genre_id": genre.genre_id, "genre_name": genre.genre_name}
 
     async def create_genre(self, genre_name: str):
         new_genre = await self.genres_repository.create_genre(genre_name=genre_name)
@@ -18,7 +21,10 @@ class GenresService:
 
     async def update_genre(self, genre_id: int, genre_name: str = None):
         genre = await self.genres_repository.update_genre(genre_id=genre_id, genre_name=genre_name)
-        return None if genre is None else {"genre_id": genre.genre_id, "genre_name": genre.genre_name}
+
+        if not genre: raise ValueError("Genre not found")
+
+        return {"genre_id": genre.genre_id, "genre_name": genre.genre_name}
 
     async def delete_genre(self, genre_id: int):
-        return await self.genres_repository.delete_genre(genre_id=genre_id)
+        if not await self.genres_repository.delete_genre(genre_id=genre_id): raise ValueError("Genre not found")

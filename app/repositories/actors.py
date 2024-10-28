@@ -36,7 +36,7 @@ class ActorsRepository:
         if biography:
             actor.biography = biography
         if birth_date:
-            actor.birth_date = birth_date
+            actor.birth_date = datetime.strptime(birth_date, '%d.%m.%Y').date()
 
         await self.db.commit()
         await self.db.refresh(actor)

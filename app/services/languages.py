@@ -6,10 +6,15 @@ class LanguagesService:
 
     async def get_languages(self):
         languages = await self.languages_repository.get_languages()
-        return None if languages is None else [{"language_id": language.language_id, "name": language.language_name} for language in languages]
+
+        return None if languages is None else \
+            [{"language_id": language.language_id, "name": language.language_name} for language in languages]
 
     async def get_language(self, language_id: int):
         language = await self.languages_repository.get_language(language_id=language_id)
+
+        if not language: raise ValueError("Language not found")
+
         return None if language is None else {"language_id": language.language_id, "name": language.language_name}
 
     async def create_language(self, language_name: str):
@@ -18,7 +23,11 @@ class LanguagesService:
 
     async def update_language(self, language_id: int, language_name: str = None):
         language = await self.languages_repository.update_language(language_id=language_id, language_name=language_name)
+
+        if not language: raise ValueError("Language not found")
+
         return None if language is None else {"language_id": language.language_id, "name": language.language_name}
 
     async def delete_language(self, language_id: int):
-        return await self.languages_repository.delete_language(language_id=language_id)
+        if not await self.languages_repository.delete_language(language_id=language_id):
+            raise ValueError("Language not found")

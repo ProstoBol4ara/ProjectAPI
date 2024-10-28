@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException, Depends
+from api_decorators import handle_exceptions
 from repositories import CouponsRepository
 from database import AsyncSession, get_db
+from fastapi import APIRouter, Depends
 from services import CouponsService
 from responses.coupons import *
 
@@ -9,6 +10,7 @@ router = APIRouter(
     tags=["coupons"]
 )
 
+@handle_exceptions(status_code=400)
 @router.get('/', summary="Fetch all coupons", responses=get_coupons)
 async def get_coupons(db: AsyncSession = Depends(get_db)):
     """
@@ -18,10 +20,9 @@ async def get_coupons(db: AsyncSession = Depends(get_db)):
     """
 
     coupons = await CouponsService(CouponsRepository(db)).get_coupons()
-    if coupons is None:
-        raise HTTPException(status_code=400, detail="Coupons not found")
     return coupons
 
+@handle_exceptions(status_code=400)
 @router.get('/{coupon_id}', summary="Fetch coupon by id", responses=get_coupon)
 async def get_coupon(coupon_id: int, db: AsyncSession = Depends(get_db)):
     """
@@ -31,10 +32,9 @@ async def get_coupon(coupon_id: int, db: AsyncSession = Depends(get_db)):
     """
 
     coupon = await CouponsService(CouponsRepository(db)).get_coupon(coupon_id=coupon_id)
-    if coupon is None:
-        raise HTTPException(status_code=400, detail="Coupon not found")
     return coupon
 
+@handle_exceptions(status_code=400)
 @router.post('/', summary="Create coupon", responses=create_coupon)
 async def create_coupon(code: str, discount_percentage: float, valid_from: str = None, valid_until: str = None, db: AsyncSession = Depends(get_db)):
     """
@@ -50,12 +50,10 @@ async def create_coupon(code: str, discount_percentage: float, valid_from: str =
         }
     """
 
-    try:
-        new_coupon = await CouponsService(CouponsRepository(db)).create_coupon(code=code, discount_percentage=discount_percentage, valid_from=valid_from, valid_until=valid_until)
-    except:
-        raise HTTPException(status_code=400, detail="Create failed")
+    new_coupon = await CouponsService(CouponsRepository(db)).create_coupon(code=code, discount_percentage=discount_percentage, valid_from=valid_from, valid_until=valid_until)
     return new_coupon
 
+@handle_exceptions(status_code=400)
 @router.put('/{coupon_id}', summary="Update coupon by id", responses=update_coupon)
 async def update_coupon(coupon_id: int, code: str = None, discount_percentage: float = None, valid_from: str = None, valid_until: str = None, db: AsyncSession = Depends(get_db)):
     """
@@ -68,14 +66,10 @@ async def update_coupon(coupon_id: int, code: str = None, discount_percentage: f
         }
     """
 
-    try:
-        coupon = await CouponsService(CouponsRepository(db)).update_coupon(coupon_id=coupon_id, code=code, discount_percentage=discount_percentage, valid_from=valid_from, valid_until=valid_until)
-        if coupon is None:
-            raise HTTPException(status_code=400, detail="Coupon not found")
-    except Exception as ex:
-        raise HTTPException(status_code=400, detail=f"{ex}")
+    coupon = await CouponsService(CouponsRepository(db)).update_coupon(coupon_id=coupon_id, code=code, discount_percentage=discount_percentage, valid_from=valid_from, valid_until=valid_until)
     return coupon
 
+@handle_exceptions(status_code=400)
 @router.delete('/{coupon_id}', summary="Delete coupon by id", responses=delete_coupon)
 async def delete_coupon(coupon_id: int, db: AsyncSession = Depends(get_db)):
     """
@@ -84,6 +78,5 @@ async def delete_coupon(coupon_id: int, db: AsyncSession = Depends(get_db)):
         DELETE /api/coupons/1
     """
 
-    if not await CouponsService(CouponsRepository(db)).delete_coupon(coupon_id=coupon_id):
-        raise HTTPException(status_code=400, detail="Coupon not found")
+    await CouponsService(CouponsRepository(db)).delete_coupon(coupon_id=coupon_id)
     return {"message": "Coupon deleted successfully"}

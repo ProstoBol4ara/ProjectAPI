@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, Depends
 from repositories import WatchHistoryRepository
+from api_decorators import handle_exceptions
 from database import AsyncSession, get_db
 from services import WatchHistoryService
+from fastapi import APIRouter, Depends
 from responses.watch_history import *
 
 router = APIRouter(
@@ -9,6 +10,7 @@ router = APIRouter(
     tags=["watch_historys"]
 )
 
+@handle_exceptions(status_code=400)
 @router.get('/', summary="Fetch all watch historys", responses=get_watch_history)
 async def get_watch_historys(db: AsyncSession = Depends(get_db)):
     """
@@ -18,10 +20,9 @@ async def get_watch_historys(db: AsyncSession = Depends(get_db)):
     """
 
     watch_historys = await WatchHistoryService(WatchHistoryRepository(db)).get_watch_historys()
-    if watch_historys is None:
-        raise HTTPException(status_code=400, detail="Watch historys not found")
     return watch_historys
 
+@handle_exceptions(status_code=400)
 @router.get('/{watch_history_id}', summary="Fetch watch history by id", responses=get_watch_history)
 async def get_watch_history(watch_history_id: int, db: AsyncSession = Depends(get_db)):
     """
@@ -31,10 +32,9 @@ async def get_watch_history(watch_history_id: int, db: AsyncSession = Depends(ge
     """
 
     watch_history = await WatchHistoryService(WatchHistoryRepository(db)).get_watch_history(watch_history_id=watch_history_id)
-    if watch_history is None:
-        raise HTTPException(status_code=400, detail="Watch history not found")
     return watch_history
 
+@handle_exceptions(status_code=400)
 @router.post('/', summary="Create watch history", responses=create_watch_history)
 async def create_watch_history(user_id: int, content_id: int, db: AsyncSession = Depends(get_db)):
     """
@@ -48,12 +48,10 @@ async def create_watch_history(user_id: int, content_id: int, db: AsyncSession =
         }
     """
 
-    try:
-        new_watch_history = await WatchHistoryService(WatchHistoryRepository(db)).create_watch_history(user_id=user_id, content_id=content_id)
-    except Exception as ex:
-        raise HTTPException(status_code=400, detail=f"{ex}")
+    new_watch_history = await WatchHistoryService(WatchHistoryRepository(db)).create_watch_history(user_id=user_id, content_id=content_id)
     return new_watch_history
 
+@handle_exceptions(status_code=400)
 @router.put('/{watch_history_id}', summary="Update watch history by id", responses=update_watch_history)
 async def update_watch_history(watch_history_id: int, user_id: int = None, content_id: int = None, db: AsyncSession = Depends(get_db)):
     """
@@ -67,14 +65,10 @@ async def update_watch_history(watch_history_id: int, user_id: int = None, conte
         }
     """
 
-    try:
-        watch_history = await WatchHistoryService(WatchHistoryRepository(db)).update_watch_history(watch_history_id=watch_history_id, user_id=user_id, content_id=content_id)
-        if watch_history is None:
-            raise HTTPException(status_code=400, detail="Watch history not found")
-    except Exception as ex:
-        raise HTTPException(status_code=400, detail=f"{ex}")
+    watch_history = await WatchHistoryService(WatchHistoryRepository(db)).update_watch_history(watch_history_id=watch_history_id, user_id=user_id, content_id=content_id)
     return watch_history
 
+@handle_exceptions(status_code=400)
 @router.delete('/{watch_history_id}', summary="Delete watch history by id", responses=delete_watch_history)
 async def delete_watch_history(watch_history_id: int, db: AsyncSession = Depends(get_db)):
     """
@@ -83,6 +77,5 @@ async def delete_watch_history(watch_history_id: int, db: AsyncSession = Depends
         DELETE /api/watch_historys/1
     """
 
-    if not await WatchHistoryService(WatchHistoryRepository(db)).delete_watch_history(watch_history_id=watch_history_id):
-        raise HTTPException(status_code=400, detail="Watch history not found")
+    await WatchHistoryService(WatchHistoryRepository(db)).delete_watch_history(watch_history_id=watch_history_id)
     return {"message": "Watch history deleted successfully"}

@@ -10,7 +10,10 @@ class ActorsService:
 
     async def get_actor(self, actor_id: int):
         actor = await self.actors_repository.get_actor(actor_id=actor_id)
-        return None if actor is None else {"actor_id": actor.actor_id, "actor_name": actor.actor_name, "biography": actor.biography, "birth_date": actor.birth_date}
+
+        if not actor: raise ValueError("Actor not found")
+
+        return {"actor_id": actor.actor_id, "actor_name": actor.actor_name, "biography": actor.biography, "birth_date": actor.birth_date}
 
     async def create_actor(self, actor_name: str, biography: str = None, birth_date: str = None):
         new_actor = await self.actors_repository.create_actor(actor_name=actor_name, biography=biography, birth_date=birth_date)
@@ -18,7 +21,10 @@ class ActorsService:
 
     async def update_actor(self, actor_id: int, actor_name: str = None, biography: str = None, birth_date: str = None):
         actor = await self.actors_repository.update_actor(actor_id=actor_id, actor_name=actor_name, biography=biography, birth_date=birth_date)
-        return None if actor is None else {"actor_id": actor.actor_id, "actor_name": actor.actor_name, "biography": actor.biography, "birth_date": actor.birth_date}
+
+        if not actor: raise ValueError("Actor not found")
+
+        return {"actor_id": actor.actor_id, "actor_name": actor.actor_name, "biography": actor.biography, "birth_date": actor.birth_date}
 
     async def delete_actor(self, actor_id: int):
-        return await self.actors_repository.delete_actor(actor_id=actor_id)
+        if not await self.actors_repository.delete_actor(actor_id=actor_id): raise ValueError("Actor not found")

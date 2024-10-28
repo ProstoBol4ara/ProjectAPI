@@ -5,7 +5,7 @@ get_actors = {
             "application/json": {
                 "example": [
                     {"actor_id": 1, "actor_name": "aaa", "biography": "aaa", "birth_date": "2002-10-10"},
-                    {"actor_id": 2, "actor_name": "bbb", "biography": "bbb", "birth_date": "2022-10-10"},
+                    {"actor_id": 2, "actor_name": "bbb", "biography": "bbb", "birth_date": "2022-10-10"}
                 ]
             }
         }

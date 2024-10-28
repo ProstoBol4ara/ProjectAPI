@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends
+from api_decorators import handle_exceptions
 from repositories import GenresRepository
 from database import AsyncSession, get_db
 from services import GenresService
@@ -9,6 +10,7 @@ router = APIRouter(
     tags=["genres"]
 )
 
+@handle_exceptions(status_code=400)
 @router.get('/', summary="Fetch all genres", responses=get_genres)
 async def get_genres(db: AsyncSession = Depends(get_db)):
     """
@@ -18,10 +20,9 @@ async def get_genres(db: AsyncSession = Depends(get_db)):
     """
 
     genres = await GenresService(GenresRepository(db)).get_genres()
-    if genres is None:
-        raise HTTPException(status_code=400, detail="Genres not found")
     return genres
 
+@handle_exceptions(status_code=400)
 @router.get('/{genre_id}', summary="Fetch genre by id", responses=get_genre)
 async def get_genre(genre_id: int, db: AsyncSession = Depends(get_db)):
     """
@@ -31,10 +32,9 @@ async def get_genre(genre_id: int, db: AsyncSession = Depends(get_db)):
     """
 
     genre = await GenresService(GenresRepository(db)).get_genre(genre_id=genre_id)
-    if genre is None:
-        raise HTTPException(status_code=400, detail="Genre not found")
     return genre
 
+@handle_exceptions(status_code=400)
 @router.post('/', summary="Create genre", responses=create_genre)
 async def create_genre(genre_name: str, db: AsyncSession = Depends(get_db)):
     """
@@ -47,12 +47,10 @@ async def create_genre(genre_name: str, db: AsyncSession = Depends(get_db)):
         }
     """
 
-    try:
-        new_genre = await GenresService(GenresRepository(db)).create_genre(genre_name=genre_name)
-    except Exception as ex:
-        raise HTTPException(status_code=400, detail=f"{ex}")
+    new_genre = await GenresService(GenresRepository(db)).create_genre(genre_name=genre_name)
     return new_genre
 
+@handle_exceptions(status_code=400)
 @router.put('/{genre_id}', summary="Update genre by id", responses=update_genre)
 async def update_genre(genre_id: int, genre_name: str = None, db: AsyncSession = Depends(get_db)):
     """
@@ -65,14 +63,10 @@ async def update_genre(genre_id: int, genre_name: str = None, db: AsyncSession =
         }
     """
 
-    try:
-        genre = await GenresService(GenresRepository(db)).update_genre(genre_id=genre_id, genre_name=genre_name)
-        if genre is None:
-            raise HTTPException(status_code=400, detail="Genre not found")
-    except Exception as ex:
-        raise HTTPException(status_code=400, detail=f"{ex}")
+    genre = await GenresService(GenresRepository(db)).update_genre(genre_id=genre_id, genre_name=genre_name)
     return genre
 
+@handle_exceptions(status_code=400)
 @router.delete('/{genre_id}', summary="Delete genre by id", responses=delete_genre)
 async def delete_genre(genre_id: int, db: AsyncSession = Depends(get_db)):
     """
@@ -81,6 +75,5 @@ async def delete_genre(genre_id: int, db: AsyncSession = Depends(get_db)):
         DELETE /api/genres/1
     """
 
-    if not await GenresService(GenresRepository(db)).delete_genre(genre_id=genre_id):
-        raise HTTPException(status_code=400, detail="Genre not found")
+    await GenresService(GenresRepository(db)).delete_genre(genre_id=genre_id)
     return {"message": "Genre deleted successfully"}

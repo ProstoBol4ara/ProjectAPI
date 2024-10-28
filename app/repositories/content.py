@@ -38,7 +38,7 @@ class ContentRepository:
         if description:
             content.description = description
         if release_date:
-            content.release_date = release_date
+            content.release_date = datetime.strptime(release_date, '%d.%m.%Y').date()
         if content_type:
             content.content_type = content_type
         if content_path:

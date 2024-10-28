@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException, Depends
+from api_decorators import handle_exceptions
 from repositories import PaymentsRepository
 from database import AsyncSession, get_db
+from fastapi import APIRouter, Depends
 from services import PaymentsService
 from responses.payments import *
 
@@ -9,6 +10,7 @@ router = APIRouter(
     tags=["payments"]
 )
 
+@handle_exceptions(status_code=400)
 @router.get('/', summary="Fetch all payments", responses=get_payments)
 async def get_payments(db: AsyncSession = Depends(get_db)):
     """
@@ -18,10 +20,9 @@ async def get_payments(db: AsyncSession = Depends(get_db)):
     """
 
     payments = await PaymentsService(PaymentsRepository(db)).get_payments()
-    if payments is None:
-        raise HTTPException(status_code=400, detail="Payments not found")
     return payments
 
+@handle_exceptions(status_code=400)
 @router.get('/{payment_id}', summary="Fetch payment by id", responses=get_payment)
 async def get_payment(payment_id: int, db: AsyncSession = Depends(get_db)):
     """
@@ -31,10 +32,9 @@ async def get_payment(payment_id: int, db: AsyncSession = Depends(get_db)):
     """
 
     payment = await PaymentsService(PaymentsRepository(db)).get_payment(payment_id=payment_id)
-    if payment is None:
-        raise HTTPException(status_code=400, detail="Payment not found")
     return payment
 
+@handle_exceptions(status_code=400)
 @router.post('/', summary="Create payment", responses=create_payment)
 async def create_payment(payment_method_id: int, pay_per_view_id: int, db: AsyncSession = Depends(get_db)):
     """
@@ -48,12 +48,10 @@ async def create_payment(payment_method_id: int, pay_per_view_id: int, db: Async
         }
     """
 
-    try:
-        new_payment = await PaymentsService(PaymentsRepository(db)).create_payment(payment_method_id = payment_method_id, pay_per_view_id = pay_per_view_id)
-    except Exception as ex:
-        raise HTTPException(status_code=400, detail=f"{ex}")
+    new_payment = await PaymentsService(PaymentsRepository(db)).create_payment(payment_method_id = payment_method_id, pay_per_view_id = pay_per_view_id)
     return new_payment
 
+@handle_exceptions(status_code=400)
 @router.put('/{payment_id}', summary="Update payment by id", responses=update_payment)
 async def update_payment(payment_id: int, payment_method_id: int, pay_per_view_id: int, db: AsyncSession = Depends(get_db)):
     """
@@ -66,14 +64,10 @@ async def update_payment(payment_id: int, payment_method_id: int, pay_per_view_i
         }
     """
 
-    try:
-        payment = await PaymentsService(PaymentsRepository(db)).update_payment(payment_id=payment_id, payment_method_id = payment_method_id, pay_per_view_id = pay_per_view_id)
-        if payment is None:
-            raise HTTPException(status_code=400, detail="Payment not found")
-    except Exception as ex:
-        raise HTTPException(status_code=400, detail=f"{ex}")
+    payment = await PaymentsService(PaymentsRepository(db)).update_payment(payment_id=payment_id, payment_method_id = payment_method_id, pay_per_view_id = pay_per_view_id)
     return payment
 
+@handle_exceptions(status_code=400)
 @router.delete('/{payment_id}', summary="Delete payment by id", responses=delete_payment)
 async def delete_payment(payment_id: int, db: AsyncSession = Depends(get_db)):
     """
@@ -82,6 +76,5 @@ async def delete_payment(payment_id: int, db: AsyncSession = Depends(get_db)):
         DELETE /api/payments/1
     """
 
-    if not await PaymentsService(PaymentsRepository(db)).delete_payment(payment_id=payment_id):
-        raise HTTPException(status_code=400, detail="Payment not found")
+    await PaymentsService(PaymentsRepository(db)).delete_payment(payment_id=payment_id)
     return {"message": "Payment deleted successfully"}
