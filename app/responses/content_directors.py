@@ -26,7 +26,7 @@ get_content_director = {
         "content": {
             "application/json": {
                 "example": {
-                    "content_director_id": 1, 
+                    "content_director_id": 1,
                     "content_id": 1,
                     "director_id": 1
                 }
@@ -49,8 +49,8 @@ create_content_director = {
         "content": {
             "application/json": {
                 "example": {
-                    "content_director_id": 1, 
-                    "content_id": 1, 
+                    "content_director_id": 1,
+                    "content_id": 1,
                     "director_id": 1
                 }
             }
@@ -72,8 +72,8 @@ update_content_director = {
         "content": {
             "application/json": {
                 "example": {
-                    "content_director_id": 1, 
-                    "content_id": 1, 
+                    "content_director_id": 1,
+                    "content_id": 1,
                     "director_id": 2
                 }
             }

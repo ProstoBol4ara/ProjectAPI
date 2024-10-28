@@ -22,4 +22,3 @@ class DirectorsService:
 
     async def delete_director(self, director_id: int):
         return await self.directors_repository.delete_director(director_id=director_id)
-    

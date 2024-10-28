@@ -18,8 +18,7 @@ class ContentCountriesService:
 
     async def update_content_country(self, content_country_id: int, content_id: int = None, country_id: int = None):
         content_country = await self.content_countries_repository.update_content_country(content_country_id=content_country_id, content_id=content_id, country_id=country_id)
-        return None if content_country is None else {"content_country_id": content_country.content_country_id, "content_id": content_countrie.content_id, "country_id": content_countrie.country_id}
+        return None if content_country is None else {"content_country_id": content_country.content_country_id, "content_id": content_country.content_id, "country_id": content_country.country_id}
 
     async def delete_content_country(self, content_country_id: int):
         return await self.content_countries_repository.delete_content_country(content_country_id=content_country_id)
-    

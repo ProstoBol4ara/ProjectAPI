@@ -13,10 +13,10 @@ router = APIRouter(
 async def get_content_countries(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/content_countries
     """
-    
+
     content_countries = await ContentCountriesService(ContentRepository(db)).get_content_countries()
     if content_countries is None:
         raise HTTPException(status_code=400, detail="Content countries not found")
@@ -29,7 +29,7 @@ async def get_content_country(content_country_id: int, db: AsyncSession = Depend
 
         GET /api/content_countries/1
     """
-    
+
     content_country = await ContentCountriesService(ContentRepository(db)).get_content_country(content_country_id=content_country_id)
     if content_country is None:
         raise HTTPException(status_code=400, detail="Content country not found")
@@ -46,8 +46,8 @@ async def create_content_country(content_id: int, country_id: int, db: AsyncSess
             "content_id": 1,
             "country_id": 1
         }
-    """    
-    
+    """
+
     try:
         new_content_country = await ContentCountriesService(ContentRepository(db)).create_content_country(content_id=content_id, country_id=country_id)
     except Exception as ex:
@@ -64,8 +64,8 @@ async def update_content_country(content_country_id: int, content_id: int = None
             "content_country_id": 1,
             "country_id": 2
         }
-    """    
-    
+    """
+
     try:
         content_country = await ContentCountriesService(ContentRepository(db)).update_content_country(content_country_id=content_country_id, content_id=content_id, country_id=country_id)
         if content_country is None:
@@ -80,8 +80,8 @@ async def delete_content_country(content_country_id: int, db: AsyncSession = Dep
     Query example:
 
         DELETE /api/content_countries/1
-    """    
-    
+    """
+
     if not await ContentCountriesService(ContentRepository(db)).delete_content_country(content_country_id=content_country_id):
         raise HTTPException(status_code=400, detail="Content country not found")
     return {"message": "Content countries deleted successfully"}

@@ -22,4 +22,3 @@ class PaymentsService:
 
     async def delete_payment(self, payment_id: int):
         return await self.payments_repository.delete_payment(payment_id=payment_id)
-    

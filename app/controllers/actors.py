@@ -43,6 +43,6 @@ async def update_actor(actor_id: int, actor_name: str = None, biography: str = N
 
 @router.delete('/{actor_id}', summary="Delete actor by id", responses=delete_actor)
 async def delete_actor(actor_id: int, db: AsyncSession = Depends(get_db)):
-    if not await ActorsService(ActorsRepository(db)).delete_actor(actor_id=actor_id): 
+    if not await ActorsService(ActorsRepository(db)).delete_actor(actor_id=actor_id):
         raise HTTPException(status_code=400, detail="Actor not found")
     return {"message": "Actors deleted successfully"}

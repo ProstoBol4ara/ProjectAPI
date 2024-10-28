@@ -13,7 +13,7 @@ router = APIRouter(
 async def get_watch_historys(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/watch_historys
     """
 
@@ -42,8 +42,8 @@ async def create_watch_history(user_id: int, content_id: int, db: AsyncSession =
 
         POST /api/watch_historys/
         {
-            "watch_history_id": 1, 
-            "user_id": 1, 
+            "watch_history_id": 1,
+            "user_id": 1,
             "content_id": 1
         }
     """
@@ -61,8 +61,8 @@ async def update_watch_history(watch_history_id: int, user_id: int = None, conte
 
         PUT /api/watch_historys/1
         {
-            "watch_history_id": 1, 
-            "user_id": 1, 
+            "watch_history_id": 1,
+            "user_id": 1,
             "content_id": 2
         }
     """

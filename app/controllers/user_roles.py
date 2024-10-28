@@ -13,7 +13,7 @@ router = APIRouter(
 async def get_user_roles(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/user_roles
     """
 
@@ -42,8 +42,8 @@ async def create_user_role(user_id: int, role_id: int, db: AsyncSession = Depend
 
         POST /api/user_roles/
         {
-            "user_role_id": 1, 
-            "user_id": 1, 
+            "user_role_id": 1,
+            "user_id": 1,
             "role_id": 1
         }
     """
@@ -55,7 +55,7 @@ async def create_user_role(user_id: int, role_id: int, db: AsyncSession = Depend
     return new_user_role
 
 @router.put('/{user_role_id}', summary="Update user role by id", responses=update_user_role)
-async def update_user_role(user_role_id: int, db: AsyncSession = Depends(get_db)):
+async def update_user_role(user_role_id: int, role_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
@@ -67,7 +67,7 @@ async def update_user_role(user_role_id: int, db: AsyncSession = Depends(get_db)
     """
 
     try:
-        user_role = await UserRolesService(UserRolesRepository(db)).update_user_role(user_role_id=user_role_id, user_id=user_id, role_id=role_id)
+        user_role = await UserRolesService(UserRolesRepository(db)).update_user_role(user_role_id=user_role_id, role_id=role_id)
         if user_role is None:
             raise HTTPException(status_code=400, detail="User role not found")
     except Exception as ex:

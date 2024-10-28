@@ -32,7 +32,7 @@ class ContentCountriesRepository:
             content_country.content_id = content_id
         if country_id:
             content_country.country_id = country_id
-        
+
         await self.db.commit()
         await self.db.refresh(content_country)
         return content_country

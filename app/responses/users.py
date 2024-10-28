@@ -26,7 +26,7 @@ get_user = {
         "content": {
             "application/json": {
                 "example": {
-                    "user_id": 1, 
+                    "user_id": 1,
                     "username": "aaa"
                 }
             }
@@ -48,7 +48,7 @@ create_user = {
         "content": {
             "application/json": {
                 "example": {
-                    "user_id": 1, 
+                    "user_id": 1,
                     "username": "aaa",
                     "email": "aaa@aaa.com"
                 }
@@ -71,7 +71,7 @@ update_user = {
         "content": {
             "application/json": {
                 "example": {
-                    "user_id": 1, 
+                    "user_id": 1,
                     "username": "aaa",
                     "email": "aaa@aaa.com"
                 }

@@ -22,4 +22,3 @@ class UserSubscriptionsService:
 
     async def delete_user_subscription(self, user_subscription_id: int):
         return await self.user_subscriptions_repository.delete_user_subscription(user_subscription_id=user_subscription_id)
-    

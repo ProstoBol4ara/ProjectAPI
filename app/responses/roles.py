@@ -26,7 +26,7 @@ get_role = {
         "content": {
             "application/json": {
                 "example": {
-                    "role_id": 1, 
+                    "role_id": 1,
                     "role_name": "aaa"
                 }
             }
@@ -48,7 +48,7 @@ create_role = {
         "content": {
             "application/json": {
                 "example": {
-                    "role_id": 1, 
+                    "role_id": 1,
                     "role_name": "aaa"
                 }
             }
@@ -70,7 +70,7 @@ update_role = {
         "content": {
             "application/json": {
                 "example": {
-                    "role_id": 1, 
+                    "role_id": 1,
                     "rolename": "aaa",
                     "email": "aaa@aaa.com"
                 }

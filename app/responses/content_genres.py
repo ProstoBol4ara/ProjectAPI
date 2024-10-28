@@ -26,8 +26,8 @@ get_content_genre = {
         "content": {
             "application/json": {
                 "example": {
-                    "content_genre_id": 1, 
-                    "content_id": 1, 
+                    "content_genre_id": 1,
+                    "content_id": 1,
                     "genre_id": 1
                 }
             }
@@ -49,8 +49,8 @@ create_content_genre = {
         "content": {
             "application/json": {
                 "example": {
-                    "content_genre_id": 1, 
-                    "content_id": 1, 
+                    "content_genre_id": 1,
+                    "content_id": 1,
                     "genre_id": 1
                 }
             }
@@ -72,8 +72,8 @@ update_content_genre = {
         "content": {
             "application/json": {
                 "example": {
-                    "content_genre_id": 1, 
-                    "content_id": 1, 
+                    "content_genre_id": 1,
+                    "content_id": 1,
                     "genre_id": 2
                 }
             }

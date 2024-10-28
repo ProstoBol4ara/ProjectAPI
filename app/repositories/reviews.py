@@ -43,7 +43,7 @@ class ReviewsRepository:
 
     async def delete_review(self, review_id: int):
         result = await self.db.execute(
-            delete(Users).where(Users.user_id == user_id)
+            delete(Reviews).where(Reviews.review_id == review_id)
         )
         await self.db.commit()
         return result.rowcount > 0

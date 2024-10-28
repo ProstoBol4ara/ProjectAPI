@@ -26,9 +26,9 @@ get_director = {
         "content": {
             "application/json": {
                 "example": {
-                    "director_id": 1, 
-                    "director_name": "aaa", 
-                    "biography": "aaa", 
+                    "director_id": 1,
+                    "director_name": "aaa",
+                    "biography": "aaa",
                     "birth_date": "2000-10-10"
                 }
             }
@@ -50,9 +50,9 @@ create_director = {
         "content": {
             "application/json": {
                 "example": {
-                    "director_id": 1, 
-                    "director_name": "aaa", 
-                    "biography": "aaa", 
+                    "director_id": 1,
+                    "director_name": "aaa",
+                    "biography": "aaa",
                     "birth_date": "2000-10-10"
                 }
             }
@@ -74,7 +74,7 @@ update_director = {
         "content": {
             "application/json": {
                 "example": {
-                    "director_id": 1, 
+                    "director_id": 1,
                     "director_name": "bbb"
                 }
             }

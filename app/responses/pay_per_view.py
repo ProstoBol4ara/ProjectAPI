@@ -26,8 +26,8 @@ get_pay_per_view = {
         "content": {
             "application/json": {
                 "example": {
-                    "pay_per_view_id": 1, 
-                    "amount": 100, 
+                    "pay_per_view_id": 1,
+                    "amount": 100,
                     "content_id": 1
                 }
             }
@@ -49,8 +49,8 @@ create_pay_per_view = {
         "content": {
             "application/json": {
                 "example": {
-                    "pay_per_view_id": 1, 
-                    "amount": 100, 
+                    "pay_per_view_id": 1,
+                    "amount": 100,
                     "content_id": 1
                 }
             }
@@ -72,7 +72,7 @@ update_pay_per_view = {
         "content": {
             "application/json": {
                 "example": {
-                    "pay_per_view_id": 1, 
+                    "pay_per_view_id": 1,
                     "amount": 200
                 }
             }

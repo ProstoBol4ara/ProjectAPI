@@ -26,9 +26,9 @@ get_content_actor = {
         "content": {
             "application/json": {
                 "example": {
-                    "content_actor_id": 1, 
-                    "content_id": 1, 
-                    "actor_id": 1, 
+                    "content_actor_id": 1,
+                    "content_id": 1,
+                    "actor_id": 1,
                     "role": "Loser"
                 }
             }
@@ -50,9 +50,9 @@ create_content_actor = {
         "content": {
             "application/json": {
                 "example": {
-                    "content_actor_id": 1, 
-                    "content_id": 1, 
-                    "actor_id": 1, 
+                    "content_actor_id": 1,
+                    "content_id": 1,
+                    "actor_id": 1,
                     "role": "Loser"
                 }
             }
@@ -74,9 +74,9 @@ update_content_actor = {
         "content": {
             "application/json": {
                 "example": {
-                    "content_actor_id": 1, 
-                    "content_id": 1, 
-                    "actor_id": 1, 
+                    "content_actor_id": 1,
+                    "content_id": 1,
+                    "actor_id": 1,
                     "role": "Human"
                 }
             }

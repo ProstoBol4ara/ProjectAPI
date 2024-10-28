@@ -13,7 +13,7 @@ router = APIRouter(
 async def get_content_actors(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/content_actors
     """
 
@@ -28,8 +28,8 @@ async def get_content_actors(content_actor_id: int, db: AsyncSession = Depends(g
     Query example:
 
         GET /api/content_actors/1
-    """    
-    
+    """
+
     content_actor = await ContentActorsService(ContentActorsRepository(db)).get_content_actor(content_actor_id=content_actor_id)
     if content_actor is None:
         raise HTTPException(status_code=400, detail="Content actor not found")
@@ -42,13 +42,13 @@ async def create_content_actors(content_id: int, actor_id: int, role: str = None
 
         POST /api/content_actors/
         {
-            "content_actor_id": 1, 
-            "content_id": 1, 
-            "actor_id": 1, 
+            "content_actor_id": 1,
+            "content_id": 1,
+            "actor_id": 1,
             "role": "Loser"
         }
-    """    
-    
+    """
+
     try:
         new_content_actor = await ContentActorsService(ContentActorsRepository(db)).create_content_actors(content_id=content_id, actor_id=actor_id, role=role)
     except Exception as ex:
@@ -62,8 +62,8 @@ async def update_content_actors(content_actor_id: int, content_id: int = None, a
 
         PUT /api/content_actors/1
         {
-            "content_actor_id": 1, 
-            "content_id": 2, 
+            "content_actor_id": 1,
+            "content_id": 2,
         }
     """
 

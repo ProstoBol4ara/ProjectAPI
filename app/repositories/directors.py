@@ -1,4 +1,5 @@
 from database import AsyncSession, select, delete
+from datetime import datetime
 from models import Directors
 
 class DirectorsRepository:
@@ -38,7 +39,7 @@ class DirectorsRepository:
             director.birth_date = datetime.strptime(birth_date, '%d.%m.%Y').date()
 
         await self.db.commit()
-        await self.db.refresh(director) 
+        await self.db.refresh(director)
         return director
 
     async def delete_director(self, director_id: int):

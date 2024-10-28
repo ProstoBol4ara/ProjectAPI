@@ -13,7 +13,7 @@ router = APIRouter(
 async def get_payments(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/payments
     """
 
@@ -42,8 +42,8 @@ async def create_payment(payment_method_id: int, pay_per_view_id: int, db: Async
 
         POST /api/payments/
         {
-            "payment_id": 1, 
-            "pay_per_view_id": 1, 
+            "payment_id": 1,
+            "pay_per_view_id": 1,
             "payment_method_id": 1
         }
     """

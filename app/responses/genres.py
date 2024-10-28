@@ -26,7 +26,7 @@ get_genre = {
         "content": {
             "application/json": {
                 "example": {
-                    "genre_id": 1, 
+                    "genre_id": 1,
                     "genre_name": "aaa"
                 }
             }
@@ -48,7 +48,7 @@ create_genre = {
         "content": {
             "application/json": {
                 "example": {
-                    "genre_id": 1, 
+                    "genre_id": 1,
                     "genre_name": "aaa"
                 }
             }
@@ -70,7 +70,7 @@ update_genre = {
         "content": {
             "application/json": {
                 "example": {
-                    "genre_id": 1, 
+                    "genre_id": 1,
                     "genre_name": "bbb"
                 }
             }

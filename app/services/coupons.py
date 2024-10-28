@@ -22,4 +22,3 @@ class CouponsService:
 
     async def delete_coupon(self, coupon_id: int):
         return await self.coupons_repository.delete_coupon(coupon_id=coupon_id)
-    

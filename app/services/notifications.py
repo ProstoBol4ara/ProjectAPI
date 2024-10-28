@@ -3,7 +3,7 @@ from repositories import NotificationsRepository
 class NotificationsService:
     def __init__(self, notifications_repository: NotificationsRepository):
         self.notifications_repository = notifications_repository
-    
+
     async def get_notifications(self):
         notifications = await self.notifications_repository.get_notifications()
         return None if notifications is None else [{"notification_id": notification.notification_id, "message": notification.message, "user_id": notification.user_id} for notification in notifications]
@@ -22,5 +22,3 @@ class NotificationsService:
 
     async def delete_notification(self, notification_id: int):
         return await self.notifications_repository.delete_notification(notification_id=notification_id)
-
-    

@@ -22,4 +22,3 @@ class ContentService:
 
     async def delete_content(self, content_id: int):
         return await self.content_repository.delete_content(content_id=content_id)
-    

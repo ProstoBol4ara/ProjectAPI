@@ -26,8 +26,8 @@ get_payment_method = {
         "content": {
             "application/json": {
                 "example": {
-                    "payment_method_id": 1, 
-                    "user_id": 1, 
+                    "payment_method_id": 1,
+                    "user_id": 1,
                     "method_type": "aaa"
                 }
             }
@@ -49,10 +49,10 @@ create_payment_method = {
         "content": {
             "application/json": {
                 "example": {
-                    "payment_method_id": 1, 
-                    "user_id": 1, 
-                    "method_type": "aaa", 
-                    "provider": "aaa", 
+                    "payment_method_id": 1,
+                    "user_id": 1,
+                    "method_type": "aaa",
+                    "provider": "aaa",
                     "account_number": "XXXXX-XXXXX-XXXXX-XXXXX"
                 }
             }
@@ -74,8 +74,8 @@ update_payment_method = {
         "content": {
             "application/json": {
                 "example": {
-                    "payment_method_id": 2, 
-                    "user_id": 1, 
+                    "payment_method_id": 2,
+                    "user_id": 1,
                     "method_type": "bbb"
                 }
             }

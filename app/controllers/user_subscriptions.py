@@ -13,7 +13,7 @@ router = APIRouter(
 async def get_user_subscriptions(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/user_subscriptions
     """
 
@@ -42,8 +42,8 @@ async def create_user_subscription(plan_name: str, plan_price: float, db: AsyncS
 
         POST /api/user_subscriptions/
         {
-            "user_subscription_id": 1, 
-            "plan_name": "aaa", 
+            "user_subscription_id": 1,
+            "plan_name": "aaa",
             "plan_price": 100
         }
     """
@@ -61,7 +61,7 @@ async def update_user_subscription(user_subscription_id: int, plan_name: str = N
 
         PUT /api/user_subscriptions/1
         {
-            "user_subscription_id": 1, 
+            "user_subscription_id": 1,
             "plan_name": "bbb"
         }
     """

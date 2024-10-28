@@ -26,8 +26,8 @@ get_payment = {
         "content": {
             "application/json": {
                 "example": {
-                    "payment_id": 1, 
-                    "pay_per_view_id": 1, 
+                    "payment_id": 1,
+                    "pay_per_view_id": 1,
                     "payment_method_id": 1
                 }
             }
@@ -49,8 +49,8 @@ create_payment = {
         "content": {
             "application/json": {
                 "example": {
-                    "payment_id": 1, 
-                    "pay_per_view_id": 1, 
+                    "payment_id": 1,
+                    "pay_per_view_id": 1,
                     "payment_method_id": 1
                 }
             }
@@ -72,8 +72,8 @@ update_payment = {
         "content": {
             "application/json": {
                 "example": {
-                    "payment_id": 1, 
-                    "pay_per_view_id": 1, 
+                    "payment_id": 1,
+                    "pay_per_view_id": 1,
                     "payment_method_id": 2
                 }
             }

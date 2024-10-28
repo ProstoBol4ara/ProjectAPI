@@ -22,4 +22,3 @@ class RolesService:
 
     async def delete_role(self, role_id: int):
         return await self.roles_repository.delete_role(role_id=role_id)
-    

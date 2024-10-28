@@ -26,8 +26,8 @@ get_favorite = {
         "content": {
             "application/json": {
                 "example": {
-                    "favorite_id": 1, 
-                    "user_id": 1, 
+                    "favorite_id": 1,
+                    "user_id": 1,
                     "content_id": 1
                 }
             }
@@ -49,8 +49,8 @@ create_favorite = {
         "content": {
             "application/json": {
                 "example": {
-                    "favorite_id": 1, 
-                    "user_id": 1, 
+                    "favorite_id": 1,
+                    "user_id": 1,
                     "content_id": 1
                 }
             }
@@ -72,7 +72,7 @@ update_favorite = {
         "content": {
             "application/json": {
                 "example": {
-                    "favorite_id": 1, 
+                    "favorite_id": 1,
                     "user_id": 2,
                 }
             }

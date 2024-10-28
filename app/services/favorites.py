@@ -22,4 +22,3 @@ class FavoritesService:
 
     async def delete_favorite(self, favorite_id: int):
         return await self.favorites_repository.delete_favorite(favorite_id=favorite_id)
-    

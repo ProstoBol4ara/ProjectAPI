@@ -26,8 +26,8 @@ get_subscription_plan = {
         "content": {
             "application/json": {
                 "example": {
-                    "plan_id": 1, 
-                    "plan_name": "aaa", 
+                    "plan_id": 1,
+                    "plan_name": "aaa",
                     "plan_price": 100
                 }
             }
@@ -49,8 +49,8 @@ create_subscription_plan = {
         "content": {
             "application/json": {
                 "example": {
-                    "plan_id": 1, 
-                    "plan_name": "aaa", 
+                    "plan_id": 1,
+                    "plan_name": "aaa",
                     "plan_price": 100
                 }
             }
@@ -72,8 +72,8 @@ update_subscription_plan = {
         "content": {
             "application/json": {
                 "example": {
-                    "plan_id": 1, 
-                    "plan_name": "bbb", 
+                    "plan_id": 1,
+                    "plan_name": "bbb",
                     "plan_price": 100
                 }
             }

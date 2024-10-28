@@ -11,7 +11,7 @@ class UserRolesRepository:
 
     async def get_user_role(self, user_role_id: int):
         user_role = await self.db.execute(
-            select(UserRoles).where(UserRoles.user_id == user_id)
+            select(UserRoles).where(UserRoles.user_role_id == user_role_id)
         )
         return user_role.scalar_one_or_none()
 
@@ -34,7 +34,7 @@ class UserRolesRepository:
             user_role.role_id = role_id
 
         await self.db.commit()
-        await self.db.refresh(user)
+        await self.db.refresh(user_role)
         return user_role
 
     async def delete_user_role(self, user_role_id: int):

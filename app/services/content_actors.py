@@ -22,4 +22,3 @@ class ContentActorsService:
 
     async def delete_content_actors(self, content_actor_id: int):
         return await self.content_actors_repository.delete_content_actors(content_actor_id=content_actor_id)
-    

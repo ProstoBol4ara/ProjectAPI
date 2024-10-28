@@ -26,7 +26,7 @@ get_country = {
         "content": {
             "application/json": {
                 "example": {
-                    "country_id": 1, 
+                    "country_id": 1,
                     "country_name": "aaa"
                 }
             }
@@ -48,7 +48,7 @@ create_country = {
         "content": {
             "application/json": {
                 "example": {
-                    "country_id": 1, 
+                    "country_id": 1,
                     "country_name": "aaa"
                 }
             }
@@ -70,7 +70,7 @@ update_country = {
         "content": {
             "application/json": {
                 "example": {
-                    "country_id": 1, 
+                    "country_id": 1,
                     "country_name": "bbb"
                 }
             }

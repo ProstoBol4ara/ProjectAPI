@@ -26,10 +26,10 @@ get_coupon = {
         "content": {
             "application/json": {
                 "example": {
-                    "coupon_id": 1, 
+                    "coupon_id": 1,
                     "code": "aaa",
-                    "discount_percentage": "0.05", 
-                    "valid_from": "2000-10-10", 
+                    "discount_percentage": "0.05",
+                    "valid_from": "2000-10-10",
                     "valid_until": "2000-11-11"
                 }
             }
@@ -51,10 +51,10 @@ create_coupon = {
         "content": {
             "application/json": {
                 "example": {
-                    "coupon_id": 1, 
+                    "coupon_id": 1,
                     "code": "aaa",
-                    "discount_percentage": "0.05", 
-                    "valid_from": "2000-10-10", 
+                    "discount_percentage": "0.05",
+                    "valid_from": "2000-10-10",
                     "valid_until": "2000-11-11"
                 }
             }
@@ -76,10 +76,10 @@ update_coupon = {
         "content": {
             "application/json": {
                 "example": {
-                    "coupon_id": 1, 
+                    "coupon_id": 1,
                     "code": "bbb",
-                    "discount_percentage": "0.05", 
-                    "valid_from": "2000-10-10", 
+                    "discount_percentage": "0.05",
+                    "valid_from": "2000-10-10",
                     "valid_until": "2000-11-11"
                 }
             }

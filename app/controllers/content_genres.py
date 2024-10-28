@@ -13,7 +13,7 @@ router = APIRouter(
 async def get_content_genres(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/content_genres
     """
 

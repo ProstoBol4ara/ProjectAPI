@@ -26,9 +26,9 @@ get_actor = {
         "content": {
             "application/json": {
                 "example": {
-                    "actor_id": 1, 
-                    "actor_name": "aaa", 
-                    "biography": "aaa", 
+                    "actor_id": 1,
+                    "actor_name": "aaa",
+                    "biography": "aaa",
                     "birth_date": "2002-10-10"
                 }
             }
@@ -50,9 +50,9 @@ create_actor = {
         "content": {
             "application/json": {
                 "example": {
-                    "actor_id": 1, 
-                    "actor_name": "aaa", 
-                    "biography": "aaa", 
+                    "actor_id": 1,
+                    "actor_name": "aaa",
+                    "biography": "aaa",
                     "birth_date": "10.10.1999"
                 }
             }
@@ -74,8 +74,8 @@ update_actor = {
         "content": {
             "application/json": {
                 "example": {
-                    "actor_id": 1, 
-                    "actor_name": "bbb", 
+                    "actor_id": 1,
+                    "actor_name": "bbb",
                     "biography": "bbb"
                 }
             }

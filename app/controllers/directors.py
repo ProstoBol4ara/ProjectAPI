@@ -13,7 +13,7 @@ router = APIRouter(
 async def get_directors(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/directors
     """
 
@@ -42,9 +42,9 @@ async def create_director(director_name: str, biography: str = None, birth_date:
 
         POST /api/directors/
         {
-            "director_id": 1, 
-            "director_name": "aaa", 
-            "biography": "aaa", 
+            "director_id": 1,
+            "director_name": "aaa",
+            "biography": "aaa",
             "birth_date": "2000-10-10"
         }
     """
@@ -62,7 +62,7 @@ async def update_director(director_id: int, director_name: str = None, biography
 
         PUT /api/directors/1
         {
-            "director_id": 1, 
+            "director_id": 1,
             "director_name": "bbb"
         }
     """

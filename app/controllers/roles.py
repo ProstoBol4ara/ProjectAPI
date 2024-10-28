@@ -13,7 +13,7 @@ router = APIRouter(
 async def get_roles(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/roles
     """
 
@@ -42,7 +42,7 @@ async def create_role(role_name: str, db: AsyncSession = Depends(get_db)):
 
         POST /api/roles/
         {
-            "role_id": 1, 
+            "role_id": 1,
             "role_name": "aaa"
         }
     """
@@ -60,7 +60,7 @@ async def update_role(role_id: int, role_name: str = None, db: AsyncSession = De
 
         PUT /api/roles/1
         {
-            "role_id": 1, 
+            "role_id": 1,
             "role_name": "bbb"
         }
     """

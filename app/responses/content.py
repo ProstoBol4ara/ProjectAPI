@@ -26,12 +26,12 @@ get_content = {
         "content": {
             "application/json": {
                 "example": {
-                    "content_id": 1, 
-                    "title": "aaa", 
-                    "preview_path": "/preview1.jpg", 
-                    "description": "aaa", 
-                    "release_date": "2002-10-11", 
-                    "content_type": "Movie", 
+                    "content_id": 1,
+                    "title": "aaa",
+                    "preview_path": "/preview1.jpg",
+                    "description": "aaa",
+                    "release_date": "2002-10-11",
+                    "content_type": "Movie",
                     "content_path": "/1"
                 }
             }
@@ -53,12 +53,12 @@ create_content = {
         "content": {
             "application/json": {
                 "example": {
-                    "content_id": 1, 
-                    "title": "aaa", 
-                    "preview_path": "/preview1.jpg", 
-                    "description": "aaa", 
-                    "release_date": "2002-10-11", 
-                    "content_type": "Movie", 
+                    "content_id": 1,
+                    "title": "aaa",
+                    "preview_path": "/preview1.jpg",
+                    "description": "aaa",
+                    "release_date": "2002-10-11",
+                    "content_type": "Movie",
                     "content_path": "/1"
                 }
             }
@@ -80,12 +80,12 @@ update_content = {
         "content": {
             "application/json": {
                 "example": {
-                    "content_id": 1, 
-                    "title": "aaa", 
-                    "preview_path": "/preview1.jpg", 
-                    "description": "bbb", 
-                    "release_date": "2002-10-11", 
-                    "content_type": "Movie", 
+                    "content_id": 1,
+                    "title": "aaa",
+                    "preview_path": "/preview1.jpg",
+                    "description": "bbb",
+                    "release_date": "2002-10-11",
+                    "content_type": "Movie",
                     "content_path": "/1"
                 }
             }

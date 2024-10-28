@@ -13,7 +13,7 @@ router = APIRouter(
 async def get_pay_per_views(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/pay_per_views
     """
 
@@ -42,14 +42,14 @@ async def create_pay_per_view(amount: float, content_id: float, db: AsyncSession
 
         POST /api/pay_per_views/
         {
-            "pay_per_view_id": 1, 
-            "amount": 100, 
+            "pay_per_view_id": 1,
+            "amount": 100,
             "content_id": 1
         }
     """
 
     try:
-        new_pay_per_view = await PayPerViewPayPerViewService(PayPerViewRepository(db)).create_pay_per_view(amount=amount, content_id=content_id)
+        new_pay_per_view = await PayPerViewService(PayPerViewRepository(db)).create_pay_per_view(amount=amount, content_id=content_id)
     except Exception as ex:
         raise HTTPException(status_code=400, detail=f"{ex}")
     return new_pay_per_view
@@ -61,7 +61,7 @@ async def update_pay_per_view(pay_per_view_id: int, amount: float = None, conten
 
         PUT /api/pay_per_views/1
         {
-            "pay_per_view_id": 1, 
+            "pay_per_view_id": 1,
             "amount": 200
         }
     """

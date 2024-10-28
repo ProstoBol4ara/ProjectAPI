@@ -13,7 +13,7 @@ router = APIRouter(
 async def get_languages(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/languages
     """
 
@@ -42,7 +42,7 @@ async def create_language(language_name: str, db: AsyncSession = Depends(get_db)
 
         POST /api/languages/
         {
-            "language_id": 1, 
+            "language_id": 1,
             "name": "aaa"
         }
     """
@@ -60,7 +60,7 @@ async def update_language(language_id: int, language_name: str = None, db: Async
 
         PUT /api/languages/1
         {
-            "language_id": 1, 
+            "language_id": 1,
             "name": "bbb"
         }
     """

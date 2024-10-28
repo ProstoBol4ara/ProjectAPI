@@ -13,7 +13,7 @@ router = APIRouter(
 async def get_genres(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/genres
     """
 
@@ -42,7 +42,7 @@ async def create_genre(genre_name: str, db: AsyncSession = Depends(get_db)):
 
         POST /api/genres/
         {
-            "genre_id": 1, 
+            "genre_id": 1,
             "genre_name": "aaa"
         }
     """
@@ -60,7 +60,7 @@ async def update_genre(genre_id: int, genre_name: str = None, db: AsyncSession =
 
         PUT /api/genres/1
         {
-            "genre_id": 1, 
+            "genre_id": 1,
             "genre_name": "bbb"
         }
     """

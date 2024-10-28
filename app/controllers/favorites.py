@@ -13,7 +13,7 @@ router = APIRouter(
 async def get_favorites(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/favorites
     """
 
@@ -42,8 +42,8 @@ async def create_favorite(user_id: int, content_id: int, db: AsyncSession = Depe
 
         POST /api/favorites/
         {
-            "favorite_id": 1, 
-            "user_id": 1, 
+            "favorite_id": 1,
+            "user_id": 1,
             "content_id": 1
         }
     """

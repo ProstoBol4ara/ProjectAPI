@@ -13,14 +13,14 @@ router = APIRouter(
 async def get_episodes(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/episodes
     """
 
     episodes = await EpisodesService(EpisodesRepository(db)).get_episodes()
     if episodes is None:
         raise HTTPException(status_code=400, detail="Episodes not found")
-    return 
+    return
 
 @router.get('/{episode_id}', summary="Fetch episode by id", responses=get_episode)
 async def get_episode(episode_id: int, db: AsyncSession = Depends(get_db)):
@@ -42,12 +42,12 @@ async def create_episode(content_id: int, season_number: int = None, episode_num
 
         POST /api/episodes/
         {
-            "episode_id": 1, 
-            "content_id": 1, 
-            "season_number": 1, 
-            "episode_number": 1, 
-            "title": "aaa", 
-            "release_date": "2000-10-10", 
+            "episode_id": 1,
+            "content_id": 1,
+            "season_number": 1,
+            "episode_number": 1,
+            "title": "aaa",
+            "release_date": "2000-10-10",
             "episode_path": "/ep1"
         }
     """
@@ -65,8 +65,8 @@ async def update_episode(episode_id: int, content_id: int = None, season_number:
 
         PUT /api/episodes/1
         {
-            "episode_id": 1, 
-            "content_id": 1, 
+            "episode_id": 1,
+            "content_id": 1,
             "title": "bbb"
         }
     """

@@ -13,7 +13,7 @@ router = APIRouter(
 async def get_notifications(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/notifications
     """
 
@@ -42,8 +42,8 @@ async def create_notification(message: str, user_id: int = None, db: AsyncSessio
 
         POST /api/notifications/
         {
-            "notification_id": 1, 
-            "message": "aaa", 
+            "notification_id": 1,
+            "message": "aaa",
             "user_id": 1
         }
     """
@@ -61,7 +61,7 @@ async def update_notification(notification_id: int, message: str, user_id: int =
 
         PUT /api/notifications/1
         {
-            "notification_id": 1, 
+            "notification_id": 1,
             "message": "bbb"
         }
     """

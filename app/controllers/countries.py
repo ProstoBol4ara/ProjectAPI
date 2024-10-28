@@ -13,7 +13,7 @@ router = APIRouter(
 async def get_countries(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/countries
     """
 
@@ -42,7 +42,7 @@ async def create_country(country_name: str, db: AsyncSession = Depends(get_db)):
 
         POST /api/countries/
         {
-            "country_id": 1, 
+            "country_id": 1,
             "country_name": "aaa"
         }
     """
@@ -60,7 +60,7 @@ async def update_country(country_id: int, country_name: str = None, db: AsyncSes
 
         PUT /api/countries/1
         {
-            "country_id": 1, 
+            "country_id": 1,
             "country_name": "bbb"
         }
     """

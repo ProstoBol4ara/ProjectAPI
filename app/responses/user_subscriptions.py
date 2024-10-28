@@ -26,8 +26,8 @@ get_user_subscription = {
         "content": {
             "application/json": {
                 "example": {
-                    "user_subscription_id": 1, 
-                    "plan_name": "aaa", 
+                    "user_subscription_id": 1,
+                    "plan_name": "aaa",
                     "plan_price": 100
                 }
             }
@@ -49,8 +49,8 @@ create_user_subscription = {
         "content": {
             "application/json": {
                 "example": {
-                    "user_subscription_id": 1, 
-                    "plan_name": "aaa", 
+                    "user_subscription_id": 1,
+                    "plan_name": "aaa",
                     "plan_price": 100
                 }
             }
@@ -72,8 +72,8 @@ update_user_subscription = {
         "content": {
             "application/json": {
                 "example": {
-                    "user_subscription_id": 1, 
-                    "plan_name": "bbb", 
+                    "user_subscription_id": 1,
+                    "plan_name": "bbb",
                     "plan_price": 100
                 }
             }

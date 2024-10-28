@@ -22,4 +22,3 @@ class ReviewsService:
 
     async def delete_review(self, review_id: int):
         return await self.reviews_repository.delete_review(review_id=review_id)
-    

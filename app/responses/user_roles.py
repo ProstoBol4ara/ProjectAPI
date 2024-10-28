@@ -26,8 +26,8 @@ get_user_role = {
         "content": {
             "application/json": {
                 "example": {
-                    "user_role_id": 1, 
-                    "user_id": 1, 
+                    "user_role_id": 1,
+                    "user_id": 1,
                     "role_id": 1
                 }
             }
@@ -49,8 +49,8 @@ create_user_role = {
         "content": {
             "application/json": {
                 "example": {
-                    "user_role_id": 1, 
-                    "user_id": 1, 
+                    "user_role_id": 1,
+                    "user_id": 1,
                     "role_id": 1
                 }
             }
@@ -72,8 +72,8 @@ update_user_role = {
         "content": {
             "application/json": {
                 "example": {
-                    "user_role_id": 1, 
-                    "user_id": 1, 
+                    "user_role_id": 1,
+                    "user_id": 1,
                     "role_id": 2
                 }
             }

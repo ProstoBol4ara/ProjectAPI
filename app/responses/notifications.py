@@ -26,8 +26,8 @@ get_notification = {
         "content": {
             "application/json": {
                 "example": {
-                    "notification_id": 1, 
-                    "message": "aaa", 
+                    "notification_id": 1,
+                    "message": "aaa",
                     "user_id": 1
                 }
             }
@@ -49,8 +49,8 @@ create_notification = {
         "content": {
             "application/json": {
                 "example": {
-                    "notification_id": 1, 
-                    "message": "aaa", 
+                    "notification_id": 1,
+                    "message": "aaa",
                     "user_id": 1
                 }
             }
@@ -72,7 +72,7 @@ update_notification = {
         "content": {
             "application/json": {
                 "example": {
-                    "notification_id": 1, 
+                    "notification_id": 1,
                     "message": "bbb"
                 }
             }

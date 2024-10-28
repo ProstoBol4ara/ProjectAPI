@@ -5,7 +5,7 @@ from models import Actors
 class ActorsRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
-    
+
     async def get_actors(self):
         actors = await self.db.execute(select(Actors))
         return actors.scalars().all()
@@ -22,7 +22,7 @@ class ActorsRepository:
         new_actor = Actors(actor_name=actor_name, biography=biography, birth_date=birth_date)
         self.db.add(new_actor)
         await self.db.commit()
-        await self.db.refresh(new_actor)   
+        await self.db.refresh(new_actor)
         return new_actor
 
     async def update_actor(self, actor_id: int, actor_name: str = None, biography: str = None, birth_date: str = None):
@@ -37,7 +37,7 @@ class ActorsRepository:
             actor.biography = biography
         if birth_date:
             actor.birth_date = birth_date
-        
+
         await self.db.commit()
         await self.db.refresh(actor)
         return actor

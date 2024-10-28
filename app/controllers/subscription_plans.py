@@ -13,7 +13,7 @@ router = APIRouter(
 async def get_subscription_plans(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/subscription_plans
     """
 
@@ -29,7 +29,7 @@ async def get_subscription_plan(plan_id: int, db: AsyncSession = Depends(get_db)
 
         GET /api/subscription_plans/1
     """
-    
+
     subscription_plan = await SubscriptionPlansService(SubscriptionPlansRepository(db)).get_subscription_plan(plan_id=plan_id)
     if subscription_plan is None:
         raise HTTPException(status_code=400, detail="Subscription plan not found")
@@ -42,8 +42,8 @@ async def create_subscription_plan(plan_name: str, plan_price: float, db: AsyncS
 
         POST /api/subscription_plans/
         {
-            "plan_id": 1, 
-            "plan_name": "aaa", 
+            "plan_id": 1,
+            "plan_name": "aaa",
             "plan_price": 100
         }
     """
@@ -61,7 +61,7 @@ async def update_subscription_plan(subscription_plan_id: int, plan_name: str = N
 
         PUT /api/subscription_plans/1
         {
-            "plan_id": 1, 
+            "plan_id": 1,
             "plan_name": "bbb"
         }
     """

@@ -22,4 +22,3 @@ class GenresService:
 
     async def delete_genre(self, genre_id: int):
         return await self.genres_repository.delete_genre(genre_id=genre_id)
-    

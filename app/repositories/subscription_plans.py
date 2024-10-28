@@ -24,7 +24,7 @@ class SubscriptionPlansRepository:
 
     async def update_subscription_plan(self, subscription_plan_id: int, plan_name: str = None, plan_price: float = None):
         subscription_plan = await self.db.execute(
-            select(SubscriptionPlans).where(SubscriptionPlans.plan_id == plan_id)
+            select(SubscriptionPlans).where(SubscriptionPlans.subscription_plan_id == subscription_plan_id)
         )
         subscription_plan = subscription_plan.scalar_one_or_none()
 

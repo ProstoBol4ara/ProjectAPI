@@ -26,12 +26,12 @@ get_episode = {
         "content": {
             "application/json": {
                 "example": {
-                    "episode_id": 1, 
-                    "content_id": 1, 
-                    "season_number": 1, 
-                    "episode_number": 1, 
-                    "title": "aaa", 
-                    "release_date": "2000-10-10", 
+                    "episode_id": 1,
+                    "content_id": 1,
+                    "season_number": 1,
+                    "episode_number": 1,
+                    "title": "aaa",
+                    "release_date": "2000-10-10",
                     "episode_path": "/ep1"
                 }
             }
@@ -53,12 +53,12 @@ create_episode = {
         "content": {
             "application/json": {
                 "example": {
-                    "episode_id": 1, 
-                    "content_id": 1, 
-                    "season_number": 1, 
-                    "episode_number": 1, 
-                    "title": "aaa", 
-                    "release_date": "2000-10-10", 
+                    "episode_id": 1,
+                    "content_id": 1,
+                    "season_number": 1,
+                    "episode_number": 1,
+                    "title": "aaa",
+                    "release_date": "2000-10-10",
                     "episode_path": "/ep1"
                 }
             }

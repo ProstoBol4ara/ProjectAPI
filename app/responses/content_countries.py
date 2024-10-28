@@ -26,8 +26,8 @@ get_content_country = {
         "content": {
             "application/json": {
                 "example": {
-                    "content_country_id": 1, 
-                    "content_id": 1, 
+                    "content_country_id": 1,
+                    "content_id": 1,
                     "country_id": 1
                 }
             }
@@ -49,8 +49,8 @@ create_content_country = {
         "content": {
             "application/json": {
                 "example": {
-                    "content_country_id": 1, 
-                    "content_id": 1, 
+                    "content_country_id": 1,
+                    "content_id": 1,
                     "country_id": 1
                 }
             }
@@ -72,8 +72,8 @@ update_content_country = {
         "content": {
             "application/json": {
                 "example": {
-                    "content_country_id": 1, 
-                    "content_id": 1, 
+                    "content_country_id": 1,
+                    "content_id": 1,
                     "country_id": 2
                 }
             }

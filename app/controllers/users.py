@@ -13,7 +13,7 @@ router = APIRouter(
 async def get_users(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/users
     """
 
@@ -29,7 +29,7 @@ async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
 
         GET /api/users/1
     """
-    
+
     user = await UsersService(UsersRepository(db)).get_user(user_id=user_id)
     if user is None:
         raise HTTPException(status_code=400, detail="User not found")
@@ -41,7 +41,7 @@ async def create_user(username: str, email: str, password: str, db: AsyncSession
     Query example:
 
         POST /api/users/
-        {   
+        {
             "username": "aaa",
             "email": "aaa@aaa.com",
             "password": "aaa"
@@ -81,7 +81,7 @@ async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
 
         DELETE /api/users/1
     """
-    
+
     if not await UsersService(UsersRepository(db)).delete_user(user_id=user_id):
         raise HTTPException(status_code=400, detail="User not found")
     return {"message": "User deleted successfully"}

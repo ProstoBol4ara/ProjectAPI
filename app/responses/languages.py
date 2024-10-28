@@ -26,7 +26,7 @@ get_language = {
         "content": {
             "application/json": {
                 "example": {
-                    "language_id": 1, 
+                    "language_id": 1,
                     "name": "aaa"
                 }
             }
@@ -48,7 +48,7 @@ create_language = {
         "content": {
             "application/json": {
                 "example": {
-                    "language_id": 1, 
+                    "language_id": 1,
                     "name": "aaa"
                 }
             }
@@ -70,7 +70,7 @@ update_language = {
         "content": {
             "application/json": {
                 "example": {
-                    "language_id": 1, 
+                    "language_id": 1,
                     "name": "bbb"
                 }
             }

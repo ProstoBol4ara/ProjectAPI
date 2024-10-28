@@ -13,7 +13,7 @@ router = APIRouter(
 async def get_payment_methods(db: AsyncSession = Depends(get_db)):
     """
     Query example:
-        
+
         GET /api/payment_methods
     """
 
@@ -42,10 +42,10 @@ async def create_payment_method(user_id: int, method_type: str, provider: str, a
 
         POST /api/payment_methods/
         {
-            "payment_method_id": 1, 
-            "user_id": 1, 
-            "method_type": "aaa", 
-            "provider": "aaa", 
+            "payment_method_id": 1,
+            "user_id": 1,
+            "method_type": "aaa",
+            "provider": "aaa",
             "account_number": "XXXXX-XXXXX-XXXXX-XXXXX"
         }
     """
@@ -63,7 +63,7 @@ async def update_payment_method(payment_method_id: int, user_id: int = None, met
 
         PUT /api/payment_methods/1
         {
-            "payment_method_id": 1, 
+            "payment_method_id": 1,
             "provider": "bbb"
         }
     """
