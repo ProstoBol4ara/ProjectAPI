@@ -21,5 +21,5 @@ services:
     ports:
       - "8000:8000"
     command: >
-      bash -c "pip install --no-cache-dir -r /api/requirements.txt && 
+      bash -c "pip install --upgrade pip && pip install --no-cache-dir -r /api/requirements.txt &&
       fastapi run /api/app/main.py --host 0.0.0.0 --port 8000"
