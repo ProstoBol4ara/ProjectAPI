@@ -25,9 +25,7 @@ from controllers.content_directors import router as content_directors_router
 from controllers.subscription_plans import router as subscription_plans_router
 from controllers.user_subscriptions import router as user_subscriptions_router
 
-router = APIRouter(
-    prefix="/api"
-)
+router = APIRouter(prefix="/api")
 
 router.include_router(roles_router)
 router.include_router(users_router)

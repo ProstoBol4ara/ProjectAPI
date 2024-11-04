@@ -5,38 +5,40 @@ from fastapi import APIRouter, Depends
 from services import CountriesService
 from responses.countries import *
 
-router = APIRouter(
-    prefix="/countries",
-    tags=["countries"]
-)
+router = APIRouter(prefix="/countries", tags=["countries"])
 
+
+@router.get("/", summary="Fetch all countries", responses=get_countries)
 @handle_exceptions(status_code=400)
-@router.get('/', summary="Fetch all countries", responses=get_countries)
-async def get_countries(db: AsyncSession = Depends(get_db)):
+async def get_all(db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         GET /api/countries
     """
 
-    countries = await CountriesService(CountriesRepository(db)).get_countries()
+    countries = await CountriesService(CountriesRepository(db)).get_all()
     return countries
 
+
+@router.get("/{country_id}", summary="Fetch countries by id", responses=get_country)
 @handle_exceptions(status_code=400)
-@router.get('/{country_id}', summary="Fetch countries by id", responses=get_country)
-async def get_country(country_id: int, db: AsyncSession = Depends(get_db)):
+async def get_one(country_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         GET /api/countries/1
     """
 
-    country = await CountriesService(CountriesRepository(db)).get_country(country_id=country_id)
+    country = await CountriesService(CountriesRepository(db)).get_one(
+        country_id=country_id
+    )
     return country
 
+
+@router.post("/", summary="Create country", responses=create_country)
 @handle_exceptions(status_code=400)
-@router.post('/', summary="Create country", responses=create_country)
-async def create_country(country_name: str, db: AsyncSession = Depends(get_db)):
+async def create(country_name: str, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
@@ -47,12 +49,17 @@ async def create_country(country_name: str, db: AsyncSession = Depends(get_db)):
         }
     """
 
-    new_country = await CountriesService(CountriesRepository(db)).create_country(country_name=country_name)
+    new_country = await CountriesService(CountriesRepository(db)).create(
+        country_name=country_name
+    )
     return new_country
 
+
+@router.put("/{country_id}", summary="Update country by id", responses=update_country)
 @handle_exceptions(status_code=400)
-@router.put('/{country_id}', summary="Update country by id", responses=update_country)
-async def update_country(country_id: int, country_name: str = None, db: AsyncSession = Depends(get_db)):
+async def update(
+    country_id: int, country_name: str = None, db: AsyncSession = Depends(get_db)
+):
     """
     Query example:
 
@@ -63,17 +70,22 @@ async def update_country(country_id: int, country_name: str = None, db: AsyncSes
         }
     """
 
-    country = await CountriesService(CountriesRepository(db)).update_country(country_id=country_id, country_name=country_name)
+    country = await CountriesService(CountriesRepository(db)).update(
+        country_id=country_id, country_name=country_name
+    )
     return country
 
+
+@router.delete(
+    "/{country_id}", summary="Delete country by id", responses=delete_country
+)
 @handle_exceptions(status_code=400)
-@router.delete('/{country_id}', summary="Delete country by id", responses=delete_country)
-async def delete_country(country_id: int, db: AsyncSession = Depends(get_db)):
+async def delete(country_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         DELETE /api/contents/1
     """
 
-    await CountriesService(CountriesRepository(db)).delete_country(country_id=country_id)
+    await CountriesService(CountriesRepository(db)).delete(country_id=country_id)
     return {"message": "Countrie deleted successfully"}

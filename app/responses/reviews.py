@@ -4,20 +4,28 @@ get_reviews = {
         "content": {
             "application/json": {
                 "example": [
-                    {"review_id": 1, "content_id": 1, "user_id": 1, "rating": 1, "comment": "aaa"},
-                    {"review_id": 2, "content_id": 1, "user_id": 2, "rating": 4, "comment": "bbb"}
+                    {
+                        "review_id": 1,
+                        "content_id": 1,
+                        "user_id": 1,
+                        "rating": 1,
+                        "comment": "aaa",
+                    },
+                    {
+                        "review_id": 2,
+                        "content_id": 1,
+                        "user_id": 2,
+                        "rating": 4,
+                        "comment": "bbb",
+                    },
                 ]
             }
-        }
+        },
     },
     400: {
         "description": "Reviews not found",
-        "content": {
-            "application/json": {
-                "example": {"detail": "Reviews not found"}
-            }
-        }
-    }
+        "content": {"application/json": {"example": {"detail": "Reviews not found"}}},
+    },
 }
 
 get_review = {
@@ -30,19 +38,15 @@ get_review = {
                     "content_id": 1,
                     "user_id": 1,
                     "rating": 1,
-                    "comment": "aaa"
+                    "comment": "aaa",
                 }
             }
-        }
+        },
     },
     400: {
         "description": "Review not found",
-        "content": {
-            "application/json": {
-                "example": {"detail": "Review not found"}
-            }
-        }
-    }
+        "content": {"application/json": {"example": {"detail": "Review not found"}}},
+    },
 }
 
 create_review = {
@@ -55,19 +59,15 @@ create_review = {
                     "content_id": 1,
                     "user_id": 1,
                     "rating": 1,
-                    "comment": "aaa"
+                    "comment": "aaa",
                 }
             }
-        }
+        },
     },
     400: {
         "description": "Any problem",
-        "content": {
-            "application/json": {
-                "example": {"detail": "..."}
-            }
-        }
-    }
+        "content": {"application/json": {"example": {"detail": "..."}}},
+    },
 }
 
 update_review = {
@@ -80,36 +80,26 @@ update_review = {
                     "content_id": 1,
                     "user_id": 1,
                     "rating": 5,
-                    "comment": "aaa"
+                    "comment": "aaa",
                 }
             }
-        }
+        },
     },
     400: {
         "description": "Any problem",
-        "content": {
-            "application/json": {
-                "example": {"detail": "..."}
-            }
-        }
-    }
+        "content": {"application/json": {"example": {"detail": "..."}}},
+    },
 }
 
 delete_review = {
     200: {
         "description": "Review deleted successfully",
         "content": {
-            "application/json": {
-                "example": {"message": "Review deleted successfully"}
-            }
-        }
+            "application/json": {"example": {"message": "Review deleted successfully"}}
+        },
     },
     400: {
         "description": "Review not found",
-        "content": {
-            "application/json": {
-                "example": {"detail": "Review not found"}
-            }
-        }
-    }
+        "content": {"application/json": {"example": {"detail": "Review not found"}}},
+    },
 }

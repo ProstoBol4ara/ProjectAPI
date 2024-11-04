@@ -5,19 +5,17 @@ get_content_directors = {
             "application/json": {
                 "example": [
                     {"content_director_id": 1, "content_id": 1, "director_id": 1},
-                    {"content_director_id": 1, "content_id": 1, "director_id": 2}
+                    {"content_director_id": 2, "content_id": 1, "director_id": 2},
                 ]
             }
-        }
+        },
     },
     400: {
         "description": "Content directors not found",
         "content": {
-            "application/json": {
-                "example": {"detail": "Content directors not found"}
-            }
-        }
-    }
+            "application/json": {"example": {"detail": "Content directors not found"}}
+        },
+    },
 }
 
 get_content_director = {
@@ -25,22 +23,16 @@ get_content_director = {
         "description": "Content director fetched successfully",
         "content": {
             "application/json": {
-                "example": {
-                    "content_director_id": 1,
-                    "content_id": 1,
-                    "director_id": 1
-                }
+                "example": {"content_director_id": 1, "content_id": 1, "director_id": 1}
             }
-        }
+        },
     },
     400: {
         "description": "Content director not found",
         "content": {
-            "application/json": {
-                "example": {"detail": "Content director not found"}
-            }
-        }
-    }
+            "application/json": {"example": {"detail": "Content director not found"}}
+        },
+    },
 }
 
 create_content_director = {
@@ -48,22 +40,14 @@ create_content_director = {
         "description": "Content director create successfully",
         "content": {
             "application/json": {
-                "example": {
-                    "content_director_id": 1,
-                    "content_id": 1,
-                    "director_id": 1
-                }
+                "example": {"content_director_id": 1, "content_id": 1, "director_id": 1}
             }
-        }
+        },
     },
     400: {
         "description": "Any problem",
-        "content": {
-            "application/json": {
-                "example": {"detail": "..."}
-            }
-        }
-    }
+        "content": {"application/json": {"example": {"detail": "..."}}},
+    },
 }
 
 update_content_director = {
@@ -71,22 +55,14 @@ update_content_director = {
         "description": "Content director update successfully",
         "content": {
             "application/json": {
-                "example": {
-                    "content_director_id": 1,
-                    "content_id": 1,
-                    "director_id": 2
-                }
+                "example": {"content_director_id": 1, "content_id": 1, "director_id": 2}
             }
-        }
+        },
     },
     400: {
         "description": "Any problem",
-        "content": {
-            "application/json": {
-                "example": {"detail": "..."}
-            }
-        }
-    }
+        "content": {"application/json": {"example": {"detail": "..."}}},
+    },
 }
 
 delete_content_director = {
@@ -96,14 +72,12 @@ delete_content_director = {
             "application/json": {
                 "example": {"message": "Content director deleted successfully"}
             }
-        }
+        },
     },
     400: {
         "description": "Content director not found",
         "content": {
-            "application/json": {
-                "example": {"detail": "Content director not found"}
-            }
-        }
-    }
+            "application/json": {"example": {"detail": "Content director not found"}}
+        },
+    },
 }

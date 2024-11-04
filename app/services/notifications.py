@@ -1,39 +1,82 @@
 from repositories import NotificationsRepository
 
+
 class NotificationsService:
-    def __init__(self, notifications_repository: NotificationsRepository):
-        self.notifications_repository = notifications_repository
+    def __init__(self, repository: NotificationsRepository):
+        self.repository = repository
 
-    async def get_notifications(self):
-        notifications = await self.notifications_repository.get_notifications()
+    async def get_all(self):
+        notifications = await self.repository.get_all()
 
-        return None if notifications is None else \
-            [{"notification_id": notification.notification_id, "message": notification.message,
-              "user_id": notification.user_id} for notification in notifications]
+        return (
+            None
+            if notifications is None
+            else [
+                {
+                    "notification_id": notification.notification_id,
+                    "message": notification.message,
+                    "user_id": notification.user_id,
+                }
+                for notification in notifications
+            ]
+        )
 
-    async def get_notification(self, notification_id: int):
-        notification = await self.notifications_repository.get_notification(notification_id=notification_id)
+    async def get_one(self, notification_id: int):
+        if not notification_id:
+            raise ValueError("notification_id cannot be empty")
 
-        if not notification: raise ValueError("Notification not found")
+        notification = await self.repository.get_one(notification_id=notification_id)
 
-        return {"notification_id": notification.notification_id, "message": notification.message,
-                "user_id": notification.user_id}
-
-    async def create_notification(self, message: str, user_id: int = None):
-        new_notification = await self.notifications_repository.create_notification(message=message, user_id=user_id)
-
-        return {"notification_id": new_notification.notification_id, "message": new_notification.message,
-                "user_id": new_notification.user_id}
-
-    async def update_notification(self, notification_id: int, message: str, user_id: int = None):
-        notification = await self.notifications_repository\
-            .update_notification(notification_id=notification_id, message=message, user_id=user_id)
-
-        if not notification: raise ValueError("Notification not found")
-
-        return {"notification_id": notification.notification_id, "message": notification.message,
-                "user_id": notification.user_id}
-
-    async def delete_notification(self, notification_id: int):
-        if not await self.notifications_repository.delete_notification(notification_id=notification_id):
+        if not notification:
             raise ValueError("Notification not found")
+
+        return {
+            "notification_id": notification.notification_id,
+            "message": notification.message,
+            "user_id": notification.user_id,
+        }
+
+    async def create(self, message: str, user_id: int = None):
+        if not message:
+            raise ValueError("message cannot be empty")
+
+        new_notification = await self.repository.create(
+            message=message, user_id=user_id
+        )
+
+        return {
+            "notification_id": new_notification.notification_id,
+            "message": new_notification.message,
+            "user_id": new_notification.user_id,
+        }
+
+    async def update(
+        self, notification_id: int, message: str = None, user_id: int = None
+    ):
+        if not notification_id:
+            raise ValueError("notification_id cannot be empty")
+
+        notification = await self.repository.update(
+            notification_id=notification_id, message=message, user_id=user_id
+        )
+
+        if not notification:
+            raise ValueError("Notification not found")
+
+        return {
+            "notification_id": notification.notification_id,
+            "message": notification.message,
+            "user_id": notification.user_id,
+        }
+
+    async def delete(self, notification_id: int):
+        if not notification_id:
+            raise ValueError("notification_id cannot be empty")
+
+        if not (
+            delete_notification := await self.repository.delete(
+                notification_id=notification_id
+            )
+        ):
+            raise ValueError("Notification not found")
+        return delete_notification

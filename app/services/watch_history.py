@@ -1,38 +1,82 @@
 from repositories import WatchHistoryRepository
 
+
 class WatchHistoryService:
-    def __init__(self, watch_historys_repository: WatchHistoryRepository):
-        self.watch_historys_repository = watch_historys_repository
+    def __init__(self, repository: WatchHistoryRepository):
+        self.repository = repository
 
-    async def get_watch_historys(self):
-        watch_historys = await self.watch_historys_repository.get_watch_historys()
+    async def get_all(self):
+        watch_historys = await self.repository.get_all()
 
-        return None if watch_historys is None else \
-            [{"watch_history_id": watch_history.watch_history_id, "user_id": watch_history.user_id,
-              "content_id": watch_history.content_id} for watch_history in watch_historys]
+        return (
+            None
+            if watch_historys is None
+            else [
+                {
+                    "watch_history_id": watch_history.watch_history_id,
+                    "user_id": watch_history.user_id,
+                    "content_id": watch_history.content_id,
+                }
+                for watch_history in watch_historys
+            ]
+        )
 
-    async def get_watch_history(self, watch_history_id: int):
-        watch_history = await self.watch_historys_repository.get_watch_history(watch_history_id=watch_history_id)
+    async def get_one(self, watch_history_id: int):
+        if not watch_history_id:
+            raise ValueError("watch_history_id cannot be empty")
 
-        if not watch_history: raise ValueError("Watch history not found")
+        watch_history = await self.repository.get_one(watch_history_id=watch_history_id)
 
-        return {"watch_history_id": watch_history.watch_history_id, "user_id": watch_history.user_id,
-                "content_id": watch_history.content_id}
+        if not watch_history:
+            raise ValueError("Watch history not found")
 
-    async def create_watch_history(self, user_id: int, content_id: int):
-        new_watch_history = await self.watch_historys_repository.create_watch_history(user_id=user_id, content_id=content_id)
+        return {
+            "watch_history_id": watch_history.watch_history_id,
+            "user_id": watch_history.user_id,
+            "content_id": watch_history.content_id,
+        }
 
-        return {"watch_history_id": new_watch_history.watch_history_id, "user_id": new_watch_history.user_id,
-                "content_id": new_watch_history.content_id}
+    async def create(self, user_id: int, content_id: int):
+        if not user_id or not content_id:
+            raise ValueError("user_id and content_id cannot be empty")
 
-    async def update_watch_history(self, watch_history_id: int, user_id: int = None, content_id: int = None):
-        watch_history = await self.watch_historys_repository\
-            .update_watch_history(watch_history_id=watch_history_id, user_id=user_id, content_id=content_id)
+        new_watch_history = await self.repository.create(
+            user_id=user_id, content_id=content_id
+        )
 
-        if not watch_history: raise ValueError("Watch history not found")
+        return {
+            "watch_history_id": new_watch_history.watch_history_id,
+            "user_id": new_watch_history.user_id,
+            "content_id": new_watch_history.content_id,
+        }
 
-        return {"watch_history_id": watch_history.watch_history_id, "user_id": watch_history.user_id,
-                "content_id": watch_history.content_id}
+    async def update(
+        self, watch_history_id: int, user_id: int = None, content_id: int = None
+    ):
+        if not watch_history_id:
+            raise ValueError("watch_history_id cannot be empty")
 
-    async def delete_watch_history(self, watch_history_id: int):
-        return await self.watch_historys_repository.delete_watch_history(watch_history_id=watch_history_id)
+        watch_history = await self.repository.update(
+            watch_history_id=watch_history_id, user_id=user_id, content_id=content_id
+        )
+
+        if not watch_history:
+            raise ValueError("Watch history not found")
+
+        return {
+            "watch_history_id": watch_history.watch_history_id,
+            "user_id": watch_history.user_id,
+            "content_id": watch_history.content_id,
+        }
+
+    async def delete(self, watch_history_id: int):
+        if not watch_history_id:
+            raise ValueError("watch_history_id cannot be empty")
+
+        if not (
+            delete_watch_history := await self.repository.delete(
+                watch_history_id=watch_history_id
+            )
+        ):
+            raise ValueError("Watch history not found")
+        return delete_watch_history

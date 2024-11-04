@@ -5,19 +5,15 @@ get_favorites = {
             "application/json": {
                 "example": [
                     {"favorite_id": 1, "user_id": 1, "content_id": 1},
-                    {"favorite_id": 2, "user_id": 1, "content_id": 2}
+                    {"favorite_id": 2, "user_id": 1, "content_id": 2},
                 ]
             }
-        }
+        },
     },
     400: {
         "description": "Favorites not found",
-        "content": {
-            "application/json": {
-                "example": {"detail": "Favorites not found"}
-            }
-        }
-    }
+        "content": {"application/json": {"example": {"detail": "Favorites not found"}}},
+    },
 }
 
 get_favorite = {
@@ -25,22 +21,14 @@ get_favorite = {
         "description": "Favorite fetched successfully",
         "content": {
             "application/json": {
-                "example": {
-                    "favorite_id": 1,
-                    "user_id": 1,
-                    "content_id": 1
-                }
+                "example": {"favorite_id": 1, "user_id": 1, "content_id": 1}
             }
-        }
+        },
     },
     400: {
         "description": "Favorite not found",
-        "content": {
-            "application/json": {
-                "example": {"detail": "Favorite not found"}
-            }
-        }
-    }
+        "content": {"application/json": {"example": {"detail": "Favorite not found"}}},
+    },
 }
 
 create_favorite = {
@@ -48,22 +36,14 @@ create_favorite = {
         "description": "Favorite create successfully",
         "content": {
             "application/json": {
-                "example": {
-                    "favorite_id": 1,
-                    "user_id": 1,
-                    "content_id": 1
-                }
+                "example": {"favorite_id": 1, "user_id": 1, "content_id": 1}
             }
-        }
+        },
     },
     400: {
         "description": "Any problem",
-        "content": {
-            "application/json": {
-                "example": {"detail": "..."}
-            }
-        }
-    }
+        "content": {"application/json": {"example": {"detail": "..."}}},
+    },
 }
 
 update_favorite = {
@@ -76,16 +56,12 @@ update_favorite = {
                     "user_id": 2,
                 }
             }
-        }
+        },
     },
     400: {
         "description": "Any problem",
-        "content": {
-            "application/json": {
-                "example": {"detail": "..."}
-            }
-        }
-    }
+        "content": {"application/json": {"example": {"detail": "..."}}},
+    },
 }
 
 delete_favorite = {
@@ -95,14 +71,10 @@ delete_favorite = {
             "application/json": {
                 "example": {"message": "Favorite deleted successfully"}
             }
-        }
+        },
     },
     400: {
         "description": "Favorite not found",
-        "content": {
-            "application/json": {
-                "example": {"detail": "Favorite not found"}
-            }
-        }
-    }
+        "content": {"application/json": {"example": {"detail": "Favorite not found"}}},
+    },
 }

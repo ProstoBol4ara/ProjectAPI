@@ -1,30 +1,99 @@
 from repositories import ActorsRepository
+from constants import date_pattern
+from re import match
+
 
 class ActorsService:
-    def __init__(self, actors_repository: ActorsRepository):
-        self.actors_repository = actors_repository
+    def __init__(self, repository: ActorsRepository):
+        self.repository = repository
 
-    async def get_actors(self):
-        actors = await self.actors_repository.get_actors()
-        return None if actors is None else [{"actor_id": actor.actor_id, "actor_name": actor.actor_name, "biography": actor.biography, "birth_date": actor.birth_date} for actor in actors]
+    async def get_all(self):
+        actors = await self.repository.get_all()
 
-    async def get_actor(self, actor_id: int):
-        actor = await self.actors_repository.get_actor(actor_id=actor_id)
+        return (
+            None
+            if actors is None
+            else [
+                {
+                    "actor_id": actor.actor_id,
+                    "actor_name": actor.actor_name,
+                    "biography": actor.biography,
+                    "birth_date": actor.birth_date,
+                }
+                for actor in actors
+            ]
+        )
 
-        if not actor: raise ValueError("Actor not found")
+    async def get_one(self, actor_id: int):
+        if not actor_id:
+            raise ValueError("actor_id cannot be empty")
 
-        return {"actor_id": actor.actor_id, "actor_name": actor.actor_name, "biography": actor.biography, "birth_date": actor.birth_date}
+        actor = await self.repository.get_one(actor_id=actor_id)
 
-    async def create_actor(self, actor_name: str, biography: str = None, birth_date: str = None):
-        new_actor = await self.actors_repository.create_actor(actor_name=actor_name, biography=biography, birth_date=birth_date)
-        return {"actor_id": new_actor.actor_id, "name": new_actor.actor_name}
+        if not actor:
+            raise ValueError("Actor not found")
 
-    async def update_actor(self, actor_id: int, actor_name: str = None, biography: str = None, birth_date: str = None):
-        actor = await self.actors_repository.update_actor(actor_id=actor_id, actor_name=actor_name, biography=biography, birth_date=birth_date)
+        return {
+            "actor_id": actor.actor_id,
+            "actor_name": actor.actor_name,
+            "biography": actor.biography,
+            "birth_date": actor.birth_date,
+        }
 
-        if not actor: raise ValueError("Actor not found")
+    async def create(
+        self, actor_name: str, biography: str = None, birth_date: str = None
+    ):
+        if not birth_date or not match(date_pattern, birth_date):
+            raise ValueError("Invalid birth_date! Date format: day.month.year")
 
-        return {"actor_id": actor.actor_id, "actor_name": actor.actor_name, "biography": actor.biography, "birth_date": actor.birth_date}
+        if not actor_name:
+            raise ValueError("Actor name cannot be empty")
 
-    async def delete_actor(self, actor_id: int):
-        if not await self.actors_repository.delete_actor(actor_id=actor_id): raise ValueError("Actor not found")
+        new_actor = await self.repository.create(
+            actor_name=actor_name, biography=biography, birth_date=birth_date
+        )
+
+        return {
+            "actor_id": new_actor.actor_id,
+            "actor_name": new_actor.actor_name,
+            "biography": new_actor.biography,
+            "birth_date": new_actor.birth_date,
+        }
+
+    async def update(
+        self,
+        actor_id: int,
+        actor_name: str = None,
+        biography: str = None,
+        birth_date: str = None,
+    ):
+        if not actor_id:
+            raise ValueError("actor_id cannot be empty")
+
+        if not birth_date or not match(date_pattern, birth_date):
+            raise ValueError("Invalid birth_date! Date format: day.month.year")
+
+        actor = await self.repository.update(
+            actor_id=actor_id,
+            actor_name=actor_name,
+            biography=biography,
+            birth_date=birth_date,
+        )
+
+        if not actor:
+            raise ValueError("Actor not found")
+
+        return {
+            "actor_id": actor.actor_id,
+            "actor_name": actor.actor_name,
+            "biography": actor.biography,
+            "birth_date": actor.birth_date,
+        }
+
+    async def delete(self, actor_id: int):
+        if not actor_id:
+            raise ValueError("actor_id cannot be empty")
+
+        if not (delete_actor := await self.repository.delete(actor_id=actor_id)):
+            raise ValueError("Actor not found")
+        return delete_actor

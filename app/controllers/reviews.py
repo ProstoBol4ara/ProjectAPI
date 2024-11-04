@@ -5,25 +5,24 @@ from fastapi import APIRouter, Depends
 from services import ReviewsService
 from responses.reviews import *
 
-router = APIRouter(
-    prefix="/reviews",
-    tags=["reviews"]
-)
+router = APIRouter(prefix="/reviews", tags=["reviews"])
 
+
+@router.get("/", summary="Fetch all reviews", responses=get_reviews)
 @handle_exceptions(status_code=400)
-@router.get('/', summary="Fetch all reviews", responses=get_reviews)
-async def get_reviews(db: AsyncSession = Depends(get_db)):
+async def get_all(db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         GET /api/reviews
     """
 
-    reviews = await ReviewsService(ReviewsRepository(db)).get_reviews()
+    reviews = await ReviewsService(ReviewsRepository(db)).get_all()
     return reviews
 
+
+@router.get("/{review_id}", summary="Fetch review by id", responses=get_review)
 @handle_exceptions(status_code=400)
-@router.get('/{review_id}', summary="Fetch review by id", responses=get_review)
 async def get_review(review_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
@@ -31,12 +30,19 @@ async def get_review(review_id: int, db: AsyncSession = Depends(get_db)):
         GET /api/reviews/1
     """
 
-    review = await ReviewsService(ReviewsRepository(db)).get_review(review_id=review_id)
+    review = await ReviewsService(ReviewsRepository(db)).get_one(review_id=review_id)
     return review
 
+
+@router.post("/", summary="Create review", responses=create_review)
 @handle_exceptions(status_code=400)
-@router.post('/', summary="Create review", responses=create_review)
-async def create_review(content_id: int, user_id: int, rating: int, comment: str, db: AsyncSession = Depends(get_db)):
+async def create(
+    content_id: int,
+    user_id: int,
+    rating: int,
+    comment: str,
+    db: AsyncSession = Depends(get_db),
+):
     """
     Query example:
 
@@ -50,12 +56,23 @@ async def create_review(content_id: int, user_id: int, rating: int, comment: str
         }
     """
 
-    new_review = await ReviewsService(ReviewsRepository(db)).create_review(content_id=content_id, user_id=user_id, rating=rating, comment=comment)
+    new_review = await ReviewsService(ReviewsRepository(db)).create(
+        content_id=content_id, user_id=user_id, rating=rating, comment=comment
+    )
+
     return new_review
 
+
+@router.put("/{review_id}", summary="Update review by id", responses=update_review)
 @handle_exceptions(status_code=400)
-@router.put('/{review_id}', summary="Update review by id", responses=update_review)
-async def update_review(review_id: int, content_id: int = None, user_id: int = None, rating: int = None, comment: str = None, db: AsyncSession = Depends(get_db)):
+async def update(
+    review_id: int,
+    content_id: int = None,
+    user_id: int = None,
+    rating: int = None,
+    comment: str = None,
+    db: AsyncSession = Depends(get_db),
+):
     """
     Query example:
 
@@ -66,18 +83,25 @@ async def update_review(review_id: int, content_id: int = None, user_id: int = N
         }
     """
 
-    review = await ReviewsService(ReviewsRepository(db)).update_review(review_id=review_id, content_id=content_id, user_id=user_id, rating=rating, comment=comment)
+    review = await ReviewsService(ReviewsRepository(db)).update(
+        review_id=review_id,
+        content_id=content_id,
+        user_id=user_id,
+        rating=rating,
+        comment=comment,
+    )
+
     return review
 
+
+@router.delete("/{review_id}", summary="Delete review by id", responses=delete_review)
 @handle_exceptions(status_code=400)
-@router.delete('/{review_id}', summary="Delete review by id", responses=delete_review)
-async def delete_review(review_id: int, db: AsyncSession = Depends(get_db)):
+async def delete(review_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         DELETE /api/reviews/1
     """
 
-    await ReviewsService(ReviewsRepository(db)).delete_review(review_id=review_id)
+    await ReviewsService(ReviewsRepository(db)).delete(review_id=review_id)
     return {"message": "Review deleted successfully"}
-

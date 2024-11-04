@@ -1,30 +1,49 @@
 from database import AsyncSession, select, delete
 from models import PaymentMethods
 
+
 class PaymentMethodsRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_payment_methods(self):
+    async def get_all(self):
         payment_methods = await self.db.execute(select(PaymentMethods))
         return payment_methods.scalars().all()
 
-    async def get_payment_method(self, payment_method_id: int):
+    async def get_one(self, payment_method_id: int):
         payment_method = await self.db.execute(
-            select(PaymentMethods).where(PaymentMethods.payment_method_id == payment_method_id)
+            select(PaymentMethods).where(
+                PaymentMethods.payment_method_id == payment_method_id
+            )
         )
         return payment_method.scalar_one_or_none()
 
-    async def create_payment_method(self, user_id: int, method_type: str, provider: str, account_number: str):
-        new_payment_method = PaymentMethods(user_id=user_id, method_type=method_type, provider=provider, account_number=account_number)
+    async def create(
+        self, user_id: int, method_type: str, provider: str, account_number: str
+    ):
+        new_payment_method = PaymentMethods(
+            user_id=user_id,
+            method_type=method_type,
+            provider=provider,
+            account_number=account_number,
+        )
         self.db.add(new_payment_method)
         await self.db.commit()
         await self.db.refresh(new_payment_method)
         return new_payment_method
 
-    async def update_payment_method(self, payment_method_id: int, user_id: int = None, method_type: str = None, provider: str = None, account_number: str = None):
+    async def update(
+        self,
+        payment_method_id: int,
+        user_id: int = None,
+        method_type: str = None,
+        provider: str = None,
+        account_number: str = None,
+    ):
         payment_method = await self.db.execute(
-            select(PaymentMethods).where(PaymentMethods.payment_method_id == payment_method_id)
+            select(PaymentMethods).where(
+                PaymentMethods.payment_method_id == payment_method_id
+            )
         )
         payment_method = payment_method.scalar_one_or_none()
 
@@ -41,9 +60,11 @@ class PaymentMethodsRepository:
         await self.db.refresh(payment_method)
         return payment_method
 
-    async def delete_payment_method(self, payment_method_id: int):
+    async def delete(self, payment_method_id: int):
         result = await self.db.execute(
-            delete(PaymentMethods).where(PaymentMethods.payment_method_id == payment_method_id)
+            delete(PaymentMethods).where(
+                PaymentMethods.payment_method_id == payment_method_id
+            )
         )
         await self.db.commit()
         return result.rowcount > 0

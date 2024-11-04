@@ -1,30 +1,60 @@
 from repositories import CountriesRepository
 
+
 class CountriesService:
-    def __init__(self, countries_repository: CountriesRepository):
-        self.countries_repository = countries_repository
+    def __init__(self, repository: CountriesRepository):
+        self.repository = repository
 
-    async def get_countries(self):
-        countries = await self.countries_repository.get_countries()
-        return None if countries is None else [{"country_id": country.country_id, "country_name": country.country_name} for country in countries]
+    async def get_all(self):
+        countries = await self.repository.get_all()
 
-    async def get_country(self, country_id: int):
-        country = await self.countries_repository.get_country(country_id=country_id)
+        return (
+            None
+            if countries is None
+            else [
+                {"country_id": country.country_id, "country_name": country.country_name}
+                for country in countries
+            ]
+        )
 
-        if not country: raise ValueError("Country not found")
+    async def get_one(self, country_id: int):
+        if not country_id:
+            raise ValueError("country_id cannot be empty")
+
+        country = await self.repository.get_one(country_id=country_id)
+
+        if not country:
+            raise ValueError("Country not found")
 
         return {"country_id": country.country_id, "country_name": country.country_name}
 
-    async def create_country(self, country_name: str):
-        new_country = await self.countries_repository.create_country(country_name=country_name)
-        return {"country_id": new_country.country_id, "country_name": new_country.country_name}
+    async def create(self, country_name: str):
+        if not country_name:
+            raise ValueError("country_name cannot be empty")
 
-    async def update_country(self, country_id: int, country_name: str = None):
-        country = await self.countries_repository.update_country(country_id=country_id, country_name=country_name)
+        new_country = await self.repository.create(country_name=country_name)
+        return {
+            "country_id": new_country.country_id,
+            "country_name": new_country.country_name,
+        }
 
-        if not country: raise ValueError("Country not found")
+    async def update(self, country_id: int, country_name: str = None):
+        if not country_id:
+            raise ValueError("country_id cannot be empty")
+
+        country = await self.repository.update(
+            country_id=country_id, country_name=country_name
+        )
+
+        if not country:
+            raise ValueError("Country not found")
 
         return {"country_id": country.country_id, "country_name": country.country_name}
 
-    async def delete_country(self, country_id: int):
-        if not await self.countries_repository.delete_country(country_id=country_id): raise ValueError("Country not found")
+    async def delete(self, country_id: int):
+        if not country_id:
+            raise ValueError("country_id cannot be empty")
+
+        if not (delete_country := await self.repository.delete(country_id=country_id)):
+            raise ValueError("Country not found")
+        return delete_country

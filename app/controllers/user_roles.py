@@ -5,38 +5,40 @@ from fastapi import APIRouter, Depends
 from services import UserRolesService
 from responses.user_roles import *
 
-router = APIRouter(
-    prefix="/user_roles",
-    tags=["user_roles"]
-)
+router = APIRouter(prefix="/user_roles", tags=["user_roles"])
 
+
+@router.get("/", summary="Fetch all user roles", responses=get_user_roles)
 @handle_exceptions(status_code=400)
-@router.get('/', summary="Fetch all user roles", responses=get_user_roles)
-async def get_user_roles(db: AsyncSession = Depends(get_db)):
+async def get_all(db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         GET /api/user_roles
     """
 
-    user_roles = await UserRolesService(UserRolesRepository(db)).get_user_roles()
+    user_roles = await UserRolesService(UserRolesRepository(db)).get_all()
     return user_roles
 
+
+@router.get("/{user_role_id}", summary="Fetch user role by id", responses=get_user_role)
 @handle_exceptions(status_code=400)
-@router.get('/{user_role_id}', summary="Fetch user role by id", responses=get_user_role)
-async def get_user_role(user_role_id: int, db: AsyncSession = Depends(get_db)):
+async def get_one(user_role_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         GET /api/user_roles/1
     """
 
-    user_role = await UserRolesService(UserRolesRepository(db)).get_user_role(user_role_id=user_role_id)
+    user_role = await UserRolesService(UserRolesRepository(db)).get_one(
+        user_role_id=user_role_id
+    )
     return user_role
 
+
+@router.post("/", summary="Create user role", responses=create_user_role)
 @handle_exceptions(status_code=400)
-@router.post('/', summary="Create user role", responses=create_user_role)
-async def create_user_role(user_id: int, role_id: int, db: AsyncSession = Depends(get_db)):
+async def create(user_id: int, role_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
@@ -48,12 +50,17 @@ async def create_user_role(user_id: int, role_id: int, db: AsyncSession = Depend
         }
     """
 
-    new_user_role = await UserRolesService(UserRolesRepository(db)).create_user_role(user_id=user_id, role_id=role_id)
+    new_user_role = await UserRolesService(UserRolesRepository(db)).create(
+        user_id=user_id, role_id=role_id
+    )
     return new_user_role
 
+
+@router.put(
+    "/{user_role_id}", summary="Update user role by id", responses=update_user_role
+)
 @handle_exceptions(status_code=400)
-@router.put('/{user_role_id}', summary="Update user role by id", responses=update_user_role)
-async def update_user_role(user_role_id: int, role_id: int, db: AsyncSession = Depends(get_db)):
+async def update(user_role_id: int, role_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
@@ -64,17 +71,22 @@ async def update_user_role(user_role_id: int, role_id: int, db: AsyncSession = D
         }
     """
 
-    user_role = await UserRolesService(UserRolesRepository(db)).update_user_role(user_role_id=user_role_id, role_id=role_id)
+    user_role = await UserRolesService(UserRolesRepository(db)).update(
+        user_role_id=user_role_id, role_id=role_id
+    )
     return user_role
 
+
+@router.delete(
+    "/{user_role_id}", summary="Delete user role by id", responses=delete_user_role
+)
 @handle_exceptions(status_code=400)
-@router.delete('/{user_role_id}', summary="Delete user role by id", responses=delete_user_role)
-async def delete_user_role(user_role_id: int, db: AsyncSession = Depends(get_db)):
+async def delete(user_role_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         DELETE /api/user_roles/1
     """
 
-    await UserRolesService(UserRolesRepository(db)).delete_user_role(user_role_id=user_role_id)
+    await UserRolesService(UserRolesRepository(db)).delete(user_role_id=user_role_id)
     return {"message": "User role deleted successfully"}

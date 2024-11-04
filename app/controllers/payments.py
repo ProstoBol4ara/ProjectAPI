@@ -5,38 +5,42 @@ from fastapi import APIRouter, Depends
 from services import PaymentsService
 from responses.payments import *
 
-router = APIRouter(
-    prefix="/payments",
-    tags=["payments"]
-)
+router = APIRouter(prefix="/payments", tags=["payments"])
 
+
+@router.get("/", summary="Fetch all payments", responses=get_payments)
 @handle_exceptions(status_code=400)
-@router.get('/', summary="Fetch all payments", responses=get_payments)
-async def get_payments(db: AsyncSession = Depends(get_db)):
+async def get_all(db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         GET /api/payments
     """
 
-    payments = await PaymentsService(PaymentsRepository(db)).get_payments()
+    payments = await PaymentsService(PaymentsRepository(db)).get_all()
     return payments
 
+
+@router.get("/{payment_id}", summary="Fetch payment by id", responses=get_payment)
 @handle_exceptions(status_code=400)
-@router.get('/{payment_id}', summary="Fetch payment by id", responses=get_payment)
-async def get_payment(payment_id: int, db: AsyncSession = Depends(get_db)):
+async def get_one(payment_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         GET /api/payments/1
     """
 
-    payment = await PaymentsService(PaymentsRepository(db)).get_payment(payment_id=payment_id)
+    payment = await PaymentsService(PaymentsRepository(db)).get_one(
+        payment_id=payment_id
+    )
     return payment
 
+
+@router.post("/", summary="Create payment", responses=create_payment)
 @handle_exceptions(status_code=400)
-@router.post('/', summary="Create payment", responses=create_payment)
-async def create_payment(payment_method_id: int, pay_per_view_id: int, db: AsyncSession = Depends(get_db)):
+async def create(
+    payment_method_id: int, pay_per_view_id: int, db: AsyncSession = Depends(get_db)
+):
     """
     Query example:
 
@@ -48,12 +52,21 @@ async def create_payment(payment_method_id: int, pay_per_view_id: int, db: Async
         }
     """
 
-    new_payment = await PaymentsService(PaymentsRepository(db)).create_payment(payment_method_id = payment_method_id, pay_per_view_id = pay_per_view_id)
+    new_payment = await PaymentsService(PaymentsRepository(db)).create(
+        payment_method_id=payment_method_id, pay_per_view_id=pay_per_view_id
+    )
+
     return new_payment
 
+
+@router.put("/{payment_id}", summary="Update payment by id", responses=update_payment)
 @handle_exceptions(status_code=400)
-@router.put('/{payment_id}', summary="Update payment by id", responses=update_payment)
-async def update_payment(payment_id: int, payment_method_id: int, pay_per_view_id: int, db: AsyncSession = Depends(get_db)):
+async def update(
+    payment_id: int,
+    payment_method_id: int,
+    pay_per_view_id: int,
+    db: AsyncSession = Depends(get_db),
+):
     """
     Query example:
 
@@ -64,17 +77,25 @@ async def update_payment(payment_id: int, payment_method_id: int, pay_per_view_i
         }
     """
 
-    payment = await PaymentsService(PaymentsRepository(db)).update_payment(payment_id=payment_id, payment_method_id = payment_method_id, pay_per_view_id = pay_per_view_id)
+    payment = await PaymentsService(PaymentsRepository(db)).update(
+        payment_id=payment_id,
+        payment_method_id=payment_method_id,
+        pay_per_view_id=pay_per_view_id,
+    )
+
     return payment
 
+
+@router.delete(
+    "/{payment_id}", summary="Delete payment by id", responses=delete_payment
+)
 @handle_exceptions(status_code=400)
-@router.delete('/{payment_id}', summary="Delete payment by id", responses=delete_payment)
-async def delete_payment(payment_id: int, db: AsyncSession = Depends(get_db)):
+async def delete(payment_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         DELETE /api/payments/1
     """
 
-    await PaymentsService(PaymentsRepository(db)).delete_payment(payment_id=payment_id)
+    await PaymentsService(PaymentsRepository(db)).delete(payment_id=payment_id)
     return {"message": "Payment deleted successfully"}

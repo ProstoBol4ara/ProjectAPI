@@ -5,19 +5,17 @@ get_payment_methods = {
             "application/json": {
                 "example": [
                     {"payment_method_id": 1, "user_id": 1, "method_type": "aaa"},
-                    {"payment_method_id": 2, "user_id": 1, "method_type": "bbb"}
+                    {"payment_method_id": 2, "user_id": 1, "method_type": "bbb"},
                 ]
             }
-        }
+        },
     },
     400: {
         "description": "Payment methods not found",
         "content": {
-            "application/json": {
-                "example": {"detail": "Payment methods not found"}
-            }
-        }
-    }
+            "application/json": {"example": {"detail": "Payment methods not found"}}
+        },
+    },
 }
 
 get_payment_method = {
@@ -25,22 +23,16 @@ get_payment_method = {
         "description": "Payment method fetched successfully",
         "content": {
             "application/json": {
-                "example": {
-                    "payment_method_id": 1,
-                    "user_id": 1,
-                    "method_type": "aaa"
-                }
+                "example": {"payment_method_id": 1, "user_id": 1, "method_type": "aaa"}
             }
-        }
+        },
     },
     400: {
         "description": "Payment method not found",
         "content": {
-            "application/json": {
-                "example": {"detail": "Payment method not found"}
-            }
-        }
-    }
+            "application/json": {"example": {"detail": "Payment method not found"}}
+        },
+    },
 }
 
 create_payment_method = {
@@ -53,19 +45,15 @@ create_payment_method = {
                     "user_id": 1,
                     "method_type": "aaa",
                     "provider": "aaa",
-                    "account_number": "XXXXX-XXXXX-XXXXX-XXXXX"
+                    "account_number": "XXXXX-XXXXX-XXXXX-XXXXX",
                 }
             }
-        }
+        },
     },
     400: {
         "description": "Any problem",
-        "content": {
-            "application/json": {
-                "example": {"detail": "..."}
-            }
-        }
-    }
+        "content": {"application/json": {"example": {"detail": "..."}}},
+    },
 }
 
 update_payment_method = {
@@ -73,22 +61,14 @@ update_payment_method = {
         "description": "Payment method update successfully",
         "content": {
             "application/json": {
-                "example": {
-                    "payment_method_id": 2,
-                    "user_id": 1,
-                    "method_type": "bbb"
-                }
+                "example": {"payment_method_id": 2, "user_id": 1, "method_type": "bbb"}
             }
-        }
+        },
     },
     400: {
         "description": "Any problem",
-        "content": {
-            "application/json": {
-                "example": {"detail": "..."}
-            }
-        }
-    }
+        "content": {"application/json": {"example": {"detail": "..."}}},
+    },
 }
 
 delete_payment_method = {
@@ -98,14 +78,12 @@ delete_payment_method = {
             "application/json": {
                 "example": {"message": "Payment method deleted successfully"}
             }
-        }
+        },
     },
     400: {
         "description": "Payment method not found",
         "content": {
-            "application/json": {
-                "example": {"detail": "Payment method not found"}
-            }
-        }
-    }
+            "application/json": {"example": {"detail": "Payment method not found"}}
+        },
+    },
 }

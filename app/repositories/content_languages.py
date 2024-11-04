@@ -1,30 +1,39 @@
 from database import AsyncSession, select, delete
 from models import ContentLanguages
 
+
 class ContentLanguagesRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_content_languages(self):
+    async def get_all(self):
         content_languages = await self.db.execute(select(ContentLanguages))
         return content_languages.scalars().all()
 
-    async def get_content_language(self, content_language_id: int):
+    async def get_one(self, content_language_id: int):
         content_language = await self.db.execute(
-            select(ContentLanguages).where(ContentLanguages.content_language_id == content_language_id)
+            select(ContentLanguages).where(
+                ContentLanguages.content_language_id == content_language_id
+            )
         )
         return content_language.scalar_one_or_none()
 
-    async def create_content_language(self, content_id: int, language_id: int):
-        new_content_language = ContentLanguages(content_id=content_id, language_id=language_id)
+    async def create(self, content_id: int, language_id: int):
+        new_content_language = ContentLanguages(
+            content_id=content_id, language_id=language_id
+        )
         self.db.add(new_content_language)
         await self.db.commit()
         await self.db.refresh(new_content_language)
         return new_content_language
 
-    async def update_content_language(self, content_language_id: int, content_id: int = None, language_id: int = None):
+    async def update(
+        self, content_language_id: int, content_id: int = None, language_id: int = None
+    ):
         content_language = await self.db.execute(
-            select(ContentLanguages).where(ContentLanguages.content_language_id == content_language_id)
+            select(ContentLanguages).where(
+                ContentLanguages.content_language_id == content_language_id
+            )
         )
         content_language = content_language.scalar_one_or_none()
 
@@ -37,9 +46,11 @@ class ContentLanguagesRepository:
         await self.db.refresh(content_language)
         return content_language
 
-    async def delete_content_language(self, content_language_id: int):
+    async def delete(self, content_language_id: int):
         result = await self.db.execute(
-            delete(ContentLanguages).where(ContentLanguages.content_language_id == content_language_id)
+            delete(ContentLanguages).where(
+                ContentLanguages.content_language_id == content_language_id
+            )
         )
         await self.db.commit()
         return result.rowcount > 0

@@ -5,13 +5,11 @@ from fastapi import APIRouter, Depends
 from services import UsersService
 from responses.users import *
 
-router = APIRouter(
-    prefix="/users",
-    tags=["users"]
-)
+router = APIRouter(prefix="/users", tags=["users"])
 
+
+@router.get("/", summary="Fetch all users", responses=get_users)
 @handle_exceptions(status_code=400)
-@router.get('/', summary="Fetch all users", responses=get_users)
 async def get_users(db: AsyncSession = Depends(get_db)):
     """
     Query example:
@@ -22,8 +20,9 @@ async def get_users(db: AsyncSession = Depends(get_db)):
     users = await UsersService(UsersRepository(db)).get_users()
     return users
 
+
+@router.get("/{user_id}", summary="Fetch user by id", responses=get_user)
 @handle_exceptions(status_code=400)
-@router.get('/{user_id}', summary="Fetch user by id", responses=get_user)
 async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
@@ -34,9 +33,12 @@ async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
     user = await UsersService(UsersRepository(db)).get_user(user_id=user_id)
     return user
 
+
+@router.post("/", summary="Create user", responses=create_user)
 @handle_exceptions(status_code=400)
-@router.post('/', summary="Create user", responses=create_user)
-async def create_user(username: str, email: str, password: str, db: AsyncSession = Depends(get_db)):
+async def create_user(
+    username: str, email: str, password: str, db: AsyncSession = Depends(get_db)
+):
     """
     Query example:
 
@@ -48,12 +50,21 @@ async def create_user(username: str, email: str, password: str, db: AsyncSession
         }
     """
 
-    new_user = await UsersService(UsersRepository(db)).create_user(username=username, email=email, password=password)
+    new_user = await UsersService(UsersRepository(db)).create_user(
+        username=username, email=email, password=password
+    )
     return new_user
 
+
+@router.put("/{user_id}", summary="Update user by id", responses=update_user)
 @handle_exceptions(status_code=400)
-@router.put('/{user_id}', summary="Update user by id", responses=update_user)
-async def update_user(user_id: int, username: str = None, email: str = None, password: str = None, db: AsyncSession = Depends(get_db)):
+async def update_user(
+    user_id: int,
+    username: str = None,
+    email: str = None,
+    password: str = None,
+    db: AsyncSession = Depends(get_db),
+):
     """
     Query example:
 
@@ -64,11 +75,14 @@ async def update_user(user_id: int, username: str = None, email: str = None, pas
         }
     """
 
-    user = await UsersService(UsersRepository(db)).update_user(user_id=user_id, username=username, email=email, password=password)
+    user = await UsersService(UsersRepository(db)).update_user(
+        user_id=user_id, username=username, email=email, password=password
+    )
     return user
 
+
+@router.delete("/{user_id}", summary="Delete user by id", responses=delete_user)
 @handle_exceptions(status_code=400)
-@router.delete('/{user_id}', summary="Delete user by id", responses=delete_user)
 async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:

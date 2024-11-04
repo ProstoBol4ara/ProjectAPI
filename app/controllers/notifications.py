@@ -5,38 +5,42 @@ from database import AsyncSession, get_db
 from fastapi import APIRouter, Depends
 from responses.notifications import *
 
-router = APIRouter(
-    prefix="/notifications",
-    tags=["notifications"]
-)
+router = APIRouter(prefix="/notifications", tags=["notifications"])
 
+
+@router.get("/", summary="Fetch all notifications", responses=get_notifications)
 @handle_exceptions(status_code=400)
-@router.get('/', summary="Fetch all notifications", responses=get_notifications)
-async def get_notifications(db: AsyncSession = Depends(get_db)):
+async def get_all(db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         GET /api/notifications
     """
 
-    notifications = await NotificationsService(NotificationsRepository(db)).get_notifications()
+    notifications = await NotificationsService(NotificationsRepository(db)).get_all()
     return notifications
 
+
+@router.get(
+    "/{notification_id}", summary="Fetch notification by id", responses=get_notification
+)
 @handle_exceptions(status_code=400)
-@router.get('/{notification_id}', summary="Fetch notification by id", responses=get_notification)
-async def get_notification(notification_id: int, db: AsyncSession = Depends(get_db)):
+async def get_one(notification_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         GET /api/notifications/1
     """
 
-    notification = await NotificationsService(NotificationsRepository(db)).get_notification(notification_id=notification_id)
+    notification = await NotificationsService(NotificationsRepository(db)).get_one(
+        notification_id=notification_id
+    )
     return notification
 
+
+@router.post("/", summary="Create notification", responses=create_notification)
 @handle_exceptions(status_code=400)
-@router.post('/', summary="Create notification", responses=create_notification)
-async def create_notification(message: str, user_id: int = None, db: AsyncSession = Depends(get_db)):
+async def create(message: str, user_id: int = None, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
@@ -48,12 +52,24 @@ async def create_notification(message: str, user_id: int = None, db: AsyncSessio
         }
     """
 
-    new_notification = await NotificationsService(NotificationsRepository(db)).create_notification(message=message, user_id=user_id)
+    new_notification = await NotificationsService(NotificationsRepository(db)).create(
+        message=message, user_id=user_id
+    )
     return new_notification
 
+
+@router.put(
+    "/{notification_id}",
+    summary="Update notification by id",
+    responses=update_notification,
+)
 @handle_exceptions(status_code=400)
-@router.put('/{notification_id}', summary="Update notification by id", responses=update_notification)
-async def update_notification(notification_id: int, message: str, user_id: int = None, db: AsyncSession = Depends(get_db)):
+async def update(
+    notification_id: int,
+    message: str,
+    user_id: int = None,
+    db: AsyncSession = Depends(get_db),
+):
     """
     Query example:
 
@@ -64,17 +80,27 @@ async def update_notification(notification_id: int, message: str, user_id: int =
         }
     """
 
-    notification = await NotificationsService(NotificationsRepository(db)).update_notification(notification_id=notification_id, message=message, user_id=user_id)
+    notification = await NotificationsService(NotificationsRepository(db)).update(
+        notification_id=notification_id, message=message, user_id=user_id
+    )
+
     return notification
 
+
+@router.delete(
+    "/{notification_id}",
+    summary="Delete notification by id",
+    responses=delete_notification,
+)
 @handle_exceptions(status_code=400)
-@router.delete('/{notification_id}', summary="Delete notification by id", responses=delete_notification)
-async def delete_notification(notification_id: int, db: AsyncSession = Depends(get_db)):
+async def delete(notification_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         DELETE /api/notifications/1
     """
 
-    await NotificationsService(NotificationsRepository(db)).delete_notification(notification_id=notification_id)
+    await NotificationsService(NotificationsRepository(db)).delete(
+        notification_id=notification_id
+    )
     return {"message": "Notification deleted successfully"}

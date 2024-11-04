@@ -5,38 +5,44 @@ from fastapi import APIRouter, Depends
 from services import CouponsService
 from responses.coupons import *
 
-router = APIRouter(
-    prefix="/coupons",
-    tags=["coupons"]
-)
+router = APIRouter(prefix="/coupons", tags=["coupons"])
 
+
+@router.get("/", summary="Fetch all coupons", responses=get_coupons)
 @handle_exceptions(status_code=400)
-@router.get('/', summary="Fetch all coupons", responses=get_coupons)
-async def get_coupons(db: AsyncSession = Depends(get_db)):
+async def get_all(db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         GET /api/coupons
     """
 
-    coupons = await CouponsService(CouponsRepository(db)).get_coupons()
+    coupons = await CouponsService(CouponsRepository(db)).get_all()
     return coupons
 
+
+@router.get("/{coupon_id}", summary="Fetch coupon by id", responses=get_coupon)
 @handle_exceptions(status_code=400)
-@router.get('/{coupon_id}', summary="Fetch coupon by id", responses=get_coupon)
-async def get_coupon(coupon_id: int, db: AsyncSession = Depends(get_db)):
+async def get_one(coupon_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         GET /api/coupons/1
     """
 
-    coupon = await CouponsService(CouponsRepository(db)).get_coupon(coupon_id=coupon_id)
+    coupon = await CouponsService(CouponsRepository(db)).get_one(coupon_id=coupon_id)
     return coupon
 
+
+@router.post("/", summary="Create coupon", responses=create_coupon)
 @handle_exceptions(status_code=400)
-@router.post('/', summary="Create coupon", responses=create_coupon)
-async def create_coupon(code: str, discount_percentage: float, valid_from: str = None, valid_until: str = None, db: AsyncSession = Depends(get_db)):
+async def create(
+    code: str,
+    discount_percentage: float,
+    valid_from: str = None,
+    valid_until: str = None,
+    db: AsyncSession = Depends(get_db),
+):
     """
     Query example:
 
@@ -50,12 +56,26 @@ async def create_coupon(code: str, discount_percentage: float, valid_from: str =
         }
     """
 
-    new_coupon = await CouponsService(CouponsRepository(db)).create_coupon(code=code, discount_percentage=discount_percentage, valid_from=valid_from, valid_until=valid_until)
+    new_coupon = await CouponsService(CouponsRepository(db)).create(
+        code=code,
+        discount_percentage=discount_percentage,
+        valid_from=valid_from,
+        valid_until=valid_until,
+    )
+
     return new_coupon
 
+
+@router.put("/{coupon_id}", summary="Update coupon by id", responses=update_coupon)
 @handle_exceptions(status_code=400)
-@router.put('/{coupon_id}', summary="Update coupon by id", responses=update_coupon)
-async def update_coupon(coupon_id: int, code: str = None, discount_percentage: float = None, valid_from: str = None, valid_until: str = None, db: AsyncSession = Depends(get_db)):
+async def update(
+    coupon_id: int,
+    code: str = None,
+    discount_percentage: float = None,
+    valid_from: str = None,
+    valid_until: str = None,
+    db: AsyncSession = Depends(get_db),
+):
     """
     Query example:
 
@@ -66,17 +86,25 @@ async def update_coupon(coupon_id: int, code: str = None, discount_percentage: f
         }
     """
 
-    coupon = await CouponsService(CouponsRepository(db)).update_coupon(coupon_id=coupon_id, code=code, discount_percentage=discount_percentage, valid_from=valid_from, valid_until=valid_until)
+    coupon = await CouponsService(CouponsRepository(db)).update(
+        coupon_id=coupon_id,
+        code=code,
+        discount_percentage=discount_percentage,
+        valid_from=valid_from,
+        valid_until=valid_until,
+    )
+
     return coupon
 
+
+@router.delete("/{coupon_id}", summary="Delete coupon by id", responses=delete_coupon)
 @handle_exceptions(status_code=400)
-@router.delete('/{coupon_id}', summary="Delete coupon by id", responses=delete_coupon)
-async def delete_coupon(coupon_id: int, db: AsyncSession = Depends(get_db)):
+async def delete(coupon_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         DELETE /api/coupons/1
     """
 
-    await CouponsService(CouponsRepository(db)).delete_coupon(coupon_id=coupon_id)
+    await CouponsService(CouponsRepository(db)).delete(coupon_id=coupon_id)
     return {"message": "Coupon deleted successfully"}

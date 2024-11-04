@@ -4,20 +4,28 @@ get_content_actors = {
         "content": {
             "application/json": {
                 "example": [
-                    {"content_actor_id": 1, "content_id": 1, "actor_id": 1, "role": "Loser"},
-                    {"content_actor_id": 1, "content_id": 1, "actor_id": 2, "role": "Niko-Niko-Nii"}
+                    {
+                        "content_actor_id": 1,
+                        "content_id": 1,
+                        "actor_id": 1,
+                        "role": "Loser",
+                    },
+                    {
+                        "content_actor_id": 1,
+                        "content_id": 1,
+                        "actor_id": 2,
+                        "role": "Niko-Niko-Nii",
+                    },
                 ]
             }
-        }
+        },
     },
     400: {
         "description": "Content actors not found",
         "content": {
-            "application/json": {
-                "example": {"detail": "Content actors not found"}
-            }
-        }
-    }
+            "application/json": {"example": {"detail": "Content actors not found"}}
+        },
+    },
 }
 
 get_content_actor = {
@@ -29,19 +37,17 @@ get_content_actor = {
                     "content_actor_id": 1,
                     "content_id": 1,
                     "actor_id": 1,
-                    "role": "Loser"
+                    "role": "Loser",
                 }
             }
-        }
+        },
     },
     400: {
         "description": "Content actors not found",
         "content": {
-            "application/json": {
-                "example": {"detail": "Content actors not found"}
-            }
-        }
-    }
+            "application/json": {"example": {"detail": "Content actors not found"}}
+        },
+    },
 }
 
 create_content_actor = {
@@ -53,19 +59,15 @@ create_content_actor = {
                     "content_actor_id": 1,
                     "content_id": 1,
                     "actor_id": 1,
-                    "role": "Loser"
+                    "role": "Loser",
                 }
             }
-        }
+        },
     },
     400: {
         "description": "Any problem",
-        "content": {
-            "application/json": {
-                "example": {"detail": "..."}
-            }
-        }
-    }
+        "content": {"application/json": {"example": {"detail": "..."}}},
+    },
 }
 
 update_content_actor = {
@@ -77,19 +79,15 @@ update_content_actor = {
                     "content_actor_id": 1,
                     "content_id": 1,
                     "actor_id": 1,
-                    "role": "Human"
+                    "role": "Human",
                 }
             }
-        }
+        },
     },
     400: {
         "description": "Any problem",
-        "content": {
-            "application/json": {
-                "example": {"detail": "..."}
-            }
-        }
-    }
+        "content": {"application/json": {"example": {"detail": "..."}}},
+    },
 }
 
 delete_content_actor = {
@@ -99,14 +97,12 @@ delete_content_actor = {
             "application/json": {
                 "example": {"message": "Content actors deleted successfully"}
             }
-        }
+        },
     },
     400: {
         "description": "Content actors not found",
         "content": {
-            "application/json": {
-                "example": {"detail": "Content actors not found"}
-            }
-        }
-    }
+            "application/json": {"example": {"detail": "Content actors not found"}}
+        },
+    },
 }
