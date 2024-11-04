@@ -10,16 +10,14 @@ router = APIRouter(prefix="/watch_historys", tags=["watch_historys"])
 
 @router.get("/", summary="Fetch all watch historys", responses=get_watch_history)
 @handle_exceptions(status_code=400)
-async def get_watch_historys(db: AsyncSession = Depends(get_db)):
+async def get_all(db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         GET /api/watch_historys
     """
 
-    watch_historys = await WatchHistoryService(
-        WatchHistoryRepository(db)
-    ).get_watch_historys()
+    watch_historys = await WatchHistoryService(WatchHistoryRepository(db)).get_all()
     return watch_historys
 
 
@@ -29,24 +27,22 @@ async def get_watch_historys(db: AsyncSession = Depends(get_db)):
     responses=get_watch_history,
 )
 @handle_exceptions(status_code=400)
-async def get_watch_history(watch_history_id: int, db: AsyncSession = Depends(get_db)):
+async def get_one(watch_history_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         GET /api/watch_historys/1
     """
 
-    watch_history = await WatchHistoryService(
-        WatchHistoryRepository(db)
-    ).get_watch_history(watch_history_id=watch_history_id)
+    watch_history = await WatchHistoryService(WatchHistoryRepository(db)).get_one(
+        watch_history_id=watch_history_id
+    )
     return watch_history
 
 
 @router.post("/", summary="Create watch history", responses=create_watch_history)
 @handle_exceptions(status_code=400)
-async def create_watch_history(
-    user_id: int, content_id: int, db: AsyncSession = Depends(get_db)
-):
+async def create(user_id: int, content_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
@@ -58,9 +54,9 @@ async def create_watch_history(
         }
     """
 
-    new_watch_history = await WatchHistoryService(
-        WatchHistoryRepository(db)
-    ).create_watch_history(user_id=user_id, content_id=content_id)
+    new_watch_history = await WatchHistoryService(WatchHistoryRepository(db)).create(
+        user_id=user_id, content_id=content_id
+    )
     return new_watch_history
 
 
@@ -70,7 +66,7 @@ async def create_watch_history(
     responses=update_watch_history,
 )
 @handle_exceptions(status_code=400)
-async def update_watch_history(
+async def update(
     watch_history_id: int,
     user_id: int = None,
     content_id: int = None,
@@ -87,9 +83,7 @@ async def update_watch_history(
         }
     """
 
-    watch_history = await WatchHistoryService(
-        WatchHistoryRepository(db)
-    ).update_watch_history(
+    watch_history = await WatchHistoryService(WatchHistoryRepository(db)).update(
         watch_history_id=watch_history_id, user_id=user_id, content_id=content_id
     )
     return watch_history
@@ -101,16 +95,14 @@ async def update_watch_history(
     responses=delete_watch_history,
 )
 @handle_exceptions(status_code=400)
-async def delete_watch_history(
-    watch_history_id: int, db: AsyncSession = Depends(get_db)
-):
+async def delete(watch_history_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         DELETE /api/watch_historys/1
     """
 
-    await WatchHistoryService(WatchHistoryRepository(db)).delete_watch_history(
+    await WatchHistoryService(WatchHistoryRepository(db)).delete(
         watch_history_id=watch_history_id
     )
     return {"message": "Watch history deleted successfully"}

@@ -10,33 +10,33 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 @router.get("/", summary="Fetch all users", responses=get_users)
 @handle_exceptions(status_code=400)
-async def get_users(db: AsyncSession = Depends(get_db)):
+async def get_all(db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         GET /api/users
     """
 
-    users = await UsersService(UsersRepository(db)).get_users()
+    users = await UsersService(UsersRepository(db)).get_all()
     return users
 
 
 @router.get("/{user_id}", summary="Fetch user by id", responses=get_user)
 @handle_exceptions(status_code=400)
-async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
+async def get_one(user_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         GET /api/users/1
     """
 
-    user = await UsersService(UsersRepository(db)).get_user(user_id=user_id)
+    user = await UsersService(UsersRepository(db)).get_one(user_id=user_id)
     return user
 
 
 @router.post("/", summary="Create user", responses=create_user)
 @handle_exceptions(status_code=400)
-async def create_user(
+async def create(
     username: str, email: str, password: str, db: AsyncSession = Depends(get_db)
 ):
     """
@@ -50,7 +50,7 @@ async def create_user(
         }
     """
 
-    new_user = await UsersService(UsersRepository(db)).create_user(
+    new_user = await UsersService(UsersRepository(db)).create(
         username=username, email=email, password=password
     )
     return new_user
@@ -58,7 +58,7 @@ async def create_user(
 
 @router.put("/{user_id}", summary="Update user by id", responses=update_user)
 @handle_exceptions(status_code=400)
-async def update_user(
+async def update(
     user_id: int,
     username: str = None,
     email: str = None,
@@ -75,7 +75,7 @@ async def update_user(
         }
     """
 
-    user = await UsersService(UsersRepository(db)).update_user(
+    user = await UsersService(UsersRepository(db)).update(
         user_id=user_id, username=username, email=email, password=password
     )
     return user
@@ -83,12 +83,12 @@ async def update_user(
 
 @router.delete("/{user_id}", summary="Delete user by id", responses=delete_user)
 @handle_exceptions(status_code=400)
-async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
+async def delete(user_id: int, db: AsyncSession = Depends(get_db)):
     """
     Query example:
 
         DELETE /api/users/1
     """
 
-    await UsersService(UsersRepository(db)).delete_user(user_id=user_id)
+    await UsersService(UsersRepository(db)).delete(user_id=user_id)
     return {"message": "User deleted successfully"}
